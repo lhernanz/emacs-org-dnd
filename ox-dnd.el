@@ -25,7 +25,8 @@
 [NO-DEFAULT-PACKAGES]
 \\usepackage[AUTO]{babel}
 \\usepackage[utf8]{inputenc}
-\\usepackage{hyperref}"
+\\usepackage{hyperref}
+\newcolumntype{H}{>{\setbox0=\hbox\bgroup}c<{\egroup}@{}}"
         (if org-dnd-use-package "book" "dndbook"))
        (when org-dnd-use-package "\\n\\usepackage{dnd}"))
      ("\\chapter{%s}" . "\\chapter*{%s}")
@@ -93,13 +94,15 @@ contextual information."
       ""
       (replace-regexp-in-string
        "\\\\item\\[{\\([^}]*\\)}] \\(.+?\\)|\\\\"
+;;       "\\\\DndMonsterAction{\\1}|\\2|\\\\"
        "\\\\begin{monsteraction}[\\1]|\\2|\\\\end{monsteraction}|\\\\"
        (replace-regexp-in-string
         "\\\\item\\[{\\([^}]*\\)}] \\(.+?\\)|\\\\"
+;;        "\\\\DndMonsterAction{\\1}|\\2\\\\"
         "\\\\begin{monsteraction}[\\1]|\\2|\\\\end{monsteraction}|\\\\"
         (replace-regexp-in-string
          "\\\\item \\([^|]*\\)"
-         "\\\\monstersection{\\1}"
+         "\\\\DndMonsterSection{\\1}"
          (replace-regexp-in-string "\n" "|" content)))))))))
 
 (defun org-dnd--add-legendary-action-text (name content)
@@ -115,7 +118,7 @@ CONTENTS holds the contents of the table.  INFO is a plist holding
 contextual information."
   (let ((name (org-element-property :name monster)))
     (concat
-     "\\begin{monsterbox}"
+     "\\begin{DndMonster}"
      (if name (format "{%s}" name) "")
      "\n"
      ;; Race and info
@@ -125,12 +128,11 @@ contextual information."
            (alignment (org-export-read-attribute :attr_monster_info monster :alignment)))
        (when (and size race alignment)
          (concat
-          "\\begin{hangingpar}\n\\textit{"
+          "\\DndMonsterType{"
           (format "%s %s" (capitalize size) race)
           (when subrace (format " (%s)" subrace))
           (format ", %s" alignment)
-          "}\n\\end{hangingpar}\n")))
-     "\\dndline%\n"
+          "}\n")))
      ;; Basics
      (let ((ac (org-export-read-attribute :attr_monster_basics monster :ac))
            (hp (org-export-read-attribute :attr_monster_basics monster :hp))
@@ -141,9 +143,9 @@ contextual information."
            (fly (org-export-read-attribute :attr_monster_basics monster :fly))
            (hover (org-export-read-attribute :attr_monster_basics monster :hover))
            (swim (org-export-read-attribute :attr_monster_basics monster :swim)))
-       (concat "\\basics[%\n"
+       (concat "\\DndMonsterBasics[%\n"
                (format "armorclass = %s,\n" (or ac 0))
-               (format "hitpoints = \\dice{%s},\n" (or hp 0))
+               (format "hitpoints = %s,\n" (or hp 0))
                (format "speed = {%s ft." (or speed 0))
                (when burrow (format ", burrow %s ft." burrow))
                (when climb (format ", climb %s ft." climb))
@@ -151,7 +153,6 @@ contextual information."
                (when hover (format ", fly %s ft. (hover)" hover))
                (when swim (format ", swim %s ft." swim))
                "},\n]\n"))
-     "\\dndline%\n"
      ;; Stats
      (let ((con (org-export-read-attribute :attr_monster_stats monster :con))
            (str (org-export-read-attribute :attr_monster_stats monster :str))
@@ -159,15 +160,14 @@ contextual information."
            (int (org-export-read-attribute :attr_monster_stats monster :int))
            (wis (org-export-read-attribute :attr_monster_stats monster :wis))
            (cha (org-export-read-attribute :attr_monster_stats monster :cha)))
-       (concat "\\stats[%\n"
-               (format "CON = \\stat{%s},\n" (or con 10))
-               (format "STR = \\stat{%s},\n" (or str 10))
-               (format "DEX = \\stat{%s},\n" (or dex 10))
-               (format "INT = \\stat{%s},\n" (or int 10))
-               (format "WIS = \\stat{%s},\n" (or wis 10))
-               (format "CHA = \\stat{%s},\n" (or cha 10))
+       (concat "\\DndMonsterAbilityScores[%\n"
+               (format "CON = %s,\n" (or con 10))
+               (format "STR = %s,\n" (or str 10))
+               (format "DEX = %s,\n" (or dex 10))
+               (format "INT = %s,\n" (or int 10))
+               (format "WIS = %s,\n" (or wis 10))
+               (format "CHA = %s,\n" (or cha 10))
                "]\n"))
-     "\\dndline%\n"
      ;; Details
      (let ((skills (org-export-read-attribute :attr_monster_details monster :skills))
            (saves (org-export-read-attribute :attr_monster_details monster :saves))
@@ -177,7 +177,7 @@ contextual information."
            (senses (org-export-read-attribute :attr_monster_details monster :senses))
            (langs (org-export-read-attribute :attr_monster_details monster :langs))
            (cr (org-export-read-attribute :attr_monster_details monster :cr)))
-       (concat "\\details[%\n"
+       (concat "\\DndMonsterDetails[%\n"
                (when skills (format "skills = {%s},\n" skills))
                (when saves (format "savingthrows = {%s},\n" saves))
                (when imm (format "conditionimmunities = {%s},\n" imm))
@@ -187,12 +187,12 @@ contextual information."
                (when langs (format "languages = {%s},\n" langs))
                (format "challenge = {%s},\n" (or cr 0))
                "]\n"))
-     "\\dndline\n"
+     ;;(message contents)
      ;; Abilities and actions
      (org-dnd--add-legendary-action-text
       name
       (org-dnd--extract-actions contents))
-     "\n\\end{monsterbox}")))
+     "\n\\end{DndMonster}")))
 
 (defun org-dnd-headline (headline contents info)
   "Transcode a HEADLINE element from Org to LaTeX.
@@ -205,7 +205,7 @@ holding contextual information."
           (org-element-put-property headline :tags (remove "map" tags))
           (replace-regexp-in-string
            "subsection{"
-           "area{"
+           "DndArea{"
            (org-latex-headline headline contents info)))
       (org-latex-headline headline contents info))))
 
@@ -274,12 +274,12 @@ contextual information."
      (if header (format "\\header{%s}\n" header) "")
      (replace-regexp-in-string
       "begin{tabular.*"
-      (format "begin{dndtable}%s%s"
-              (if align (format "[%s]" align) "")
+      (format "begin{DndTable}%s%s"
+              (if align (format "{%s}" align) "")
               (if color (format "[%s]" color) ""))
       (replace-regexp-in-string
        "end{tabular}"
-       "end{dndtable}"
+       "end{DndTable}"
        (replace-regexp-in-string
         "{table}"
         "{table*}"
@@ -292,7 +292,7 @@ contextual information."
           (replace-regexp-in-string
            "\\\\hline"
            (if (not separate) ""
-             (format "\\\\end{dndtable}\n\\\\begin{dndtable}%s%s"
+             (format "\\\\end{DndTable}\n\\\\begin{DndTable}%s%s"
                      (if align (format "[%s]" align) "")
                      (if color (format "[%s]" color) "")))
            (org-latex-table table contents info))))))))))
