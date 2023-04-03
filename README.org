@@ -121,6 +121,7 @@ Heading on first line of block, subtitle on second line of block.
 - =ATTR_MONSTER_DETAILS= :: Detailed information; all optional:
   - =:skills=
   - =:saves=
+  - =:cim= (condition immunities)
   - =:imm= (damage immunities)
   - =:res= (damage resistances)
   - =:vul= (damage vulnerabilities)

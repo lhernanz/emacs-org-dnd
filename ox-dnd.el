@@ -26,7 +26,7 @@
 \\usepackage[AUTO]{babel}
 \\usepackage[utf8]{inputenc}
 \\usepackage{hyperref}
-\newcolumntype{H}{>{\setbox0=\hbox\bgroup}c<{\egroup}@{}}"
+\\newcolumntype{H}{>{\\setbox0=\\hbox\\bgroup}c<{\\egroup}@{}}"
         (if org-dnd-use-package "book" "dndbook"))
        (when org-dnd-use-package "\\n\\usepackage{dnd}"))
      ("\\chapter{%s}" . "\\chapter*{%s}")
@@ -171,6 +171,7 @@ contextual information."
      ;; Details
      (let ((skills (org-export-read-attribute :attr_monster_details monster :skills))
            (saves (org-export-read-attribute :attr_monster_details monster :saves))
+           (cim (org-export-read-attribute :attr_monster_details monster :cim))
            (imm (org-export-read-attribute :attr_monster_details monster :imm))
            (res (org-export-read-attribute :attr_monster_details monster :res))
            (vul (org-export-read-attribute :attr_monster_details monster :vul))
@@ -179,10 +180,11 @@ contextual information."
            (cr (org-export-read-attribute :attr_monster_details monster :cr)))
        (concat "\\DndMonsterDetails[%\n"
                (when skills (format "skills = {%s},\n" skills))
-               (when saves (format "savingthrows = {%s},\n" saves))
-               (when imm (format "conditionimmunities = {%s},\n" imm))
-               (when res (format "damageresistances = {%s},\n" res))
-               (when vul (format "damagevulnerabilities = {%s},\n" vul))
+               (when saves (format "saving-throws = {%s},\n" saves))
+               (when cim (format "condition-immunities = {%s},\n" cim))
+               (when imm (format "damage-immunities = {%s},\n" imm))
+               (when res (format "damage-resistances = {%s},\n" res))
+               (when vul (format "damage-vulnerabilities = {%s},\n" vul))
                (when senses (format "senses = {%s},\n" senses))
                (when langs (format "languages = {%s},\n" langs))
                (format "challenge = {%s},\n" (or cr 0))
@@ -243,19 +245,19 @@ contextual information."
         (title (or (org-element-property :name special-block) "")))
     (pcase type
       ("commentbox"
-       (concat (format "\\begin{%s}{%s}" type title)
+       (concat (format "\\begin{%s}{%s}" "DndComment" title)
                (org-latex--caption/label-string special-block info)
                contents
-               (format "\\end{%s}" type)))
-      ("paperbox"
-       (concat (format "\\begin{%s}[float=!t]{%s}" type title)
+               (format "\\end{%s}""DndComment")))
+      ("sidebar"
+       (concat (format "\\begin{%s}[float=!h]{%s}" "DndSidebar" title)
                (org-latex--caption/label-string special-block info)
                contents
-               (format "\\end{%s}\n" type)))
-      ("quotebox"
-       (concat (format "\\begin{%s}\n" type)
+               (format "\\end{%s}\n" "DndSidebar")))
+      ("readaloud"
+       (concat (format "\\begin{%s}\n" "DndReadAloud")
                contents
-               (format "\\end{%s}" type)))
+               (format "\\end{%s}" "DndReadAloud")))
       ("spell" (org-dnd-spell special-block contents info))
       ("subtitle" (org-dnd--subtitle-block special-block contents info))
       ("monster" (org-dnd-monsterbox special-block contents info))
