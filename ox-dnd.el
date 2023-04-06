@@ -72,6 +72,7 @@ contextual information."
             contents
             "\\end{spell}")))
 
+;; Subtitle is a deprecated option in the latex template
 (defun org-dnd--subtitle-block (subtitle contents info)
   "Transcode a SUBTITLE-BLOCK element to D&D LaTeX.
 CONTENTS holds the contents of the block.  INFO is a plist holding
@@ -80,6 +81,23 @@ contextual information."
     (format "\\subtitlesection{%s}{%s}"
             (car content)
             (car (cdr content)))))
+
+(defun org-dnd--item-block (item contents info)
+  "Transcode a ITEM-BLOCK element to D&D LaTeX.
+CONTENTS holds the contents of the block.  INFO is a plist holding
+contextual information."
+  (let ((content (split-string contents "\n" t nil)))
+    (format "\\DndItemHeader{%s}{%s}\n%s"
+            (car content)
+            (car (cdr content))
+            (replace-regexp-in-string
+             "\\\\item\\[{\\([^}]+\\)}]"
+             "\\\\item\\[\\1 :\\]"
+             (replace-regexp-in-string
+              "\\\\begin{description}"
+              "\\\\begin{description}[nosep, after = { \\\\vspace{4pt plus 1pt minus 1pt} }]"
+              (string-join (cdr (cdr content)) "\n")))
+            )))
 
 (defun org-dnd--extract-actions (content)
   (org-trim
@@ -259,6 +277,7 @@ contextual information."
                contents
                (format "\\end{%s}" "DndReadAloud")))
       ("spell" (org-dnd-spell special-block contents info))
+      ("item" (org-dnd--item-block special-block contents info))
       ("subtitle" (org-dnd--subtitle-block special-block contents info))
       ("monster" (org-dnd-monsterbox special-block contents info))
       (_ (org-latex-special-block special-block contents info)))))
