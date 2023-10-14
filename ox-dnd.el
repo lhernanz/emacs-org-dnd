@@ -91,8 +91,8 @@ contextual information."
             (car content)
             (car (cdr content))
             (replace-regexp-in-string
-             "\\\\item\\[{\\([^}]+\\)}]"
-             "\\\\item\\[\\1 :\\]"
+             "\\\\item\\[{\\([^}]+\\)}\\]"
+             "\\\\item[\\1 :]"
              (replace-regexp-in-string
               "\\\\begin{description}"
               "\\\\begin{description}[nosep, after = { \\\\vspace{4pt plus 1pt minus 1pt} }]"
