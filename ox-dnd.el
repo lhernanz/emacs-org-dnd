@@ -18,16 +18,10 @@
 (defcustom org-dnd-latex-preamble
   "\\documentclass[10pt,twoside,twocolumn,openany[CO],notitlepage,nodeprecatedcode]{%s}
 [NO-DEFAULT-PACKAGES]
-
 \\usepackage[AUTO]{babel}
 \\usepackage[utf8]{inputenc}
 \\usepackage[hidelinks]{hyperref}
 \\usepackage{stfloats}
-\\usepackage{titling}
-\\pretitle{\\begin{center}\\DndFontTitle\\DndTitleContour}
-\\posttitle{\\par\\end{center}}
-\\preauthor{\\begin{center}\\DndFontSubtitle\\DndSubtitleContour}
-\\postauthor{\\end{center}}
 \\usetikzlibrary{intersections}
 \\usepackage[singlelinecheck=false]{caption}
 \\captionsetup[table]{labelformat=empty,font={sf,sc,bf,},skip=0pt}
@@ -35,6 +29,18 @@
   "The common LaTeX preamble that will be added to all dnd classes.
 Notice that this is a template that will be used with the format
 function where it will get the name of the class"
+  :group 'org-dnd
+  :type 'string)
+
+(defcustom org-dndbook-latex-preamble
+  "\\usepackage{titling}
+\\pretitle{\\begin{center}\\DndFontTitle}
+\\posttitle{\\par\\end{center}}
+\\preauthor{\\begin{center}\\DndFontSubtitle}
+\\postauthor{\\end{center}}
+"
+  "The LaTeX preamble that will be added to the dndbook class.
+Notice that this will be inserted after the common part of the template."
   :group 'org-dnd
   :type 'string)
 
@@ -48,19 +54,14 @@ the toc:nil option, not to those generated with #+TOC keyword."
 (unless (assoc "dndbook" org-latex-classes)
   (add-to-list
    'org-latex-classes
-   `("dndbook"
-     ,(concat
+   `(concat
        (format
         org-dnd-latex-preamble
         (if org-dnd-use-package "book" "dndbook"))
+       org-dndbook-latex-preamble
        (when org-dnd-use-package "\\n\\usepackage{dnd}"))
-     ("\\chapter{%s}" . "\\chapter*{%s}")
-     ("\\section{%s}" . "\\section*{%s}")
-     ("\\subsection{%s}" . "\\subsection*{%s}")
-     ("\\subsubsection{%s}" . "\\subsubsection*{%s}")
-     ("\\paragraph{%s}" . "\\paragraph*{%s}")
-     )
-   )
+   ))
+(unless (assoc "dndarticle" org-latex-classes)
    (add-to-list
     'org-latex-classes
    `("dndarticle"
