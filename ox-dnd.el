@@ -54,13 +54,14 @@ the toc:nil option, not to those generated with #+TOC keyword."
 (unless (assoc "dndbook" org-latex-classes)
   (add-to-list
    'org-latex-classes
-   `(concat
+   `("dndbook"
+     `(concat
        (format
         org-dnd-latex-preamble
         (if org-dnd-use-package "book" "dndbook"))
        org-dndbook-latex-preamble
        (when org-dnd-use-package "\\n\\usepackage{dnd}"))
-   ))
+   )))
 (unless (assoc "dndarticle" org-latex-classes)
    (add-to-list
     'org-latex-classes
