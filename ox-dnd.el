@@ -266,9 +266,12 @@ holding contextual information."
         (progn
           (org-element-put-property headline :tags (remove "map" tags))
           (replace-regexp-in-string
+           "\\\\subsubsection{"
+           "\\\\DndSubArea{"
+          (replace-regexp-in-string
            "\\\\subsection{"
            "\\\\DndArea{"
-           (org-latex-headline headline contents info)))
+           (org-latex-headline headline contents info))))
       (org-latex-headline headline contents info))))
 
 
