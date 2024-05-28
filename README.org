@@ -1,7 +1,7 @@
 * =emacs-org-dnd=
 
 Provides an org-mode compatability layer to the
-[[https://github.com/evanbergeron/DND-5e-LaTeX-Template][D&D 5e LaTeX
+[[https://github.com/ashonit/DND-5e-LaTeX-Template][D&D 5e LaTeX
 Template]].
 
 * News
@@ -14,8 +14,7 @@ As much effort as possible has been taken to make creation feel like natural
 org-mode markup.
 
 Follow the instructions to set up the package at the
-[[https://github.com/evanbergeron/DND-5e-LaTeX-Template][LaTeX template
-repo]].
+[[https://github.com/evanbergeron/DND-5e-LaTeX-Template][LaTeX template repo]].
 
 Clone this repo somewhere and add it to your emacs load path.
 
@@ -30,7 +29,7 @@ Add the following to your =.emacs=:
 Simply add the following to your =.org= file:
 
 #+BEGIN_SRC org
-    ,#+LATEX_CLASS: dnd
+    ,#+LATEX_CLASS: dndbook
 #+END_SRC
 
 Each environment in the LaTeX package corresponds to an org-mode block. Each
@@ -59,7 +58,8 @@ following options are added or changed from their default LaTeX export values:
   - =full= :: Load both the background and footer images (default).
   - =none= :: Remove both the background and footer images.
   - =print= :: Load only the footer images.
-- =:mtoc= :: Boolean. Use the multi-column table of contents (default =t=).
+- =:no-multitoc= :: Boolean. Don't use the multi-column table of contents (default =f=).
+- =:highcontrast= :: Boolean. Use the high-contrast mode of the template (default =f=).
 
 ** Customisation
 
