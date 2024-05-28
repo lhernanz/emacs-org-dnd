@@ -107,15 +107,15 @@ contextual information."
         (range (org-export-read-attribute :attr_spell spell :range))
         (mats (org-export-read-attribute :attr_spell spell :comp))
         (dur (org-export-read-attribute :attr_spell spell :duration)))
-    (concat "\\begin{spell}"
-            (format "{%s}" (or name ""))
-            (format "{%s}" (org-dnd--spell-level level school))
-            (format "{%s}" (or ct ""))
-            (format "{%s}" (or range ""))
-            (format "{%s}" (or mats ""))
+    (concat "\\DndSpellHeader%\n"
+            (format "{%s}\n" (or name ""))
+            (format "{%s}\n" (org-dnd--spell-level level school))
+            (format "{%s}\n" (or ct ""))
+            (format "{%s}\n" (or range ""))
+            (format "{%s}\n" (or mats ""))
             (format "{%s}\n" (or dur ""))
             contents
-            "\\end{spell}")))
+            )))
 
 ;; Subtitle is a deprecated option in the latex template
 (defun org-dnd--subtitle-block (subtitle contents info)
