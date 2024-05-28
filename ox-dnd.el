@@ -380,13 +380,14 @@ contextual information."
         (color (org-export-read-attribute :attr_dnd table :color))
         (separate (org-export-read-attribute :attr_dnd table :separate)))
     (format
-     "%s%s"
-     (if header (format "\\header{%s}\n" header) "")
+     "%s"
      (replace-regexp-in-string
       "begin{tabular.*"
-      (format "begin{DndTable}%s%s\\\\\\\\"
+      (format "begin{DndTable}%s%s%s\\\\\\\\"
+              (if color (format "[color=%s]" color) "")
+              (if header (format "[header=%s]" header) "")
               (if align (format "{%s}" align) "")
-              (if color (format "[%s]" color) ""))
+              )
       (replace-regexp-in-string
        "end{tabular}"
        "end{DndTable}"
