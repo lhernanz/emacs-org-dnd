@@ -378,6 +378,7 @@ contextual information."
                    (org-export-read-attribute :attr_dnd table :align)
                  default-align))
         (color (org-export-read-attribute :attr_dnd table :color))
+        (lines (org-export-read-attribute :attr_dnd table :lines))
         (separate (org-export-read-attribute :attr_dnd table :separate)))
     (format
      "%s"
@@ -398,7 +399,9 @@ contextual information."
          "\\\\\\(begin\\|end\\){center}\n?"
          ""
          (replace-regexp-in-string
-          "\\\\centering"
+          (format "\\\\centering%s"
+                  (if lines "" "\\|\\\\toprule\\|\\\\bottomrule")
+                  )
           ""
           (replace-regexp-in-string
            "\\\\hline"
