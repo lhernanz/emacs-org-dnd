@@ -360,7 +360,7 @@ contextual information."
      (if header (format "\\header{%s}\n" header) "")
      (replace-regexp-in-string
       "begin{tabular.*"
-      (format "begin{DndTable}%s%s"
+      (format "begin{DndTable}%s%s\\\\\\\\"
               (if align (format "{%s}" align) "")
               (if color (format "[%s]" color) ""))
       (replace-regexp-in-string
