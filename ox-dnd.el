@@ -324,18 +324,27 @@ holding export options."
   "Transcode a SPECIAL-BLOCK element from Org to D&D LaTeX.
 CONTENTS holds the contents of the block.  INFO is a plist holding
 contextual information."
-  (let ((type (downcase (org-element-property :type special-block)))
-        (title (or (org-element-property :name special-block) "")))
+  (let* ((type (downcase (org-element-property :type special-block)))
+         (name (org-element-property :name special-block))
+         ;; Get the first line of the content as title if name is null
+         (title (if name name
+                  (car (split-string contents "\n" t nil))
+                ))
+         ;; Remove first like if being used as title
+         (content (if name contents
+                    (string-join (cdr (split-string contents "\n" nil nil)) "\n")
+                    ))
+         )
     (pcase type
       ("commentbox"
        (concat (format "\\begin{%s}{%s}" "DndComment" title)
                (org-latex--caption/label-string special-block info)
-               contents
+               content
                (format "\\end{%s}""DndComment")))
       ("sidebar"
        (concat (format "\\begin{%s}[float=!h]{%s}" "DndSidebar" title)
                (org-latex--caption/label-string special-block info)
-               contents
+               content
                (format "\\end{%s}\n" "DndSidebar")))
       ("readaloud"
        (concat (format "\\begin{%s}\n" "DndReadAloud")
