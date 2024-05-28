@@ -360,8 +360,18 @@ contextual information."
   "Transcode a table from Org to a D&D LaTeX table.
 CONTENTS holds the contents of the table.  INFO is a plist holding
 contextual information."
-  (let ((header (car (org-element-property :header table)))
-        (align (org-export-read-attribute :attr_dnd table :align))
+  (let* ((header (car (org-element-property :header table)))
+         (table-width (list-length
+                       (org-element-map table
+                           '(table-row)
+                         (lambda (row)
+	                         (and (eq (org-element-property :type row) 'standard)
+                                (org-element-contents row))) info 'first-match)))
+         (default-align (concat "l"
+                                (mapconcat 'identity (make-list (1- table-width) "X") "")))
+        (align (if (org-export-read-attribute :attr_dnd table :align)
+                   (org-export-read-attribute :attr_dnd table :align)
+                 default-align))
         (color (org-export-read-attribute :attr_dnd table :color))
         (separate (org-export-read-attribute :attr_dnd table :separate)))
     (format
