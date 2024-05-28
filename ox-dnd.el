@@ -264,10 +264,33 @@ holding contextual information."
         (progn
           (org-element-put-property headline :tags (remove "map" tags))
           (replace-regexp-in-string
-           "subsection{"
-           "DndArea{"
+           "\\\\subsection{"
+           "\\\\DndArea{"
            (org-latex-headline headline contents info)))
       (org-latex-headline headline contents info))))
+
+
+;; Horizontal Rule
+;; We need to redefine this to constraint the line just to one column
+(defun org-dnd-horizontal-rule (horizontal-rule _contents info)
+  "Transcode an HORIZONTAL-RULE object from Org to LaTeX.
+CONTENTS is nil.  INFO is a plist holding contextual information."
+  (let ((attr (org-export-read-attribute :attr_latex horizontal-rule))
+	      (prev (org-export-get-previous-element horizontal-rule info)))
+    (concat
+     ;; Make sure the rule doesn't start at the end of the current
+     ;; line by separating it with a blank line from previous element.
+     (when (and prev
+		            (let ((prev-blank (org-element-property :post-blank prev)))
+		              (or (not prev-blank) (zerop prev-blank))))
+       "\n")
+     (org-latex--wrap-label
+      horizontal-rule
+      (format "\\noindent\\rule{%s}{%s}"
+	            (or (plist-get attr :width) "\\linewidth")
+	            (or (plist-get attr :thickness) "0.5pt"))
+      info))))
+
 
 ;; HACK There has to be an easier way to add the package options as a derived
 ;; LaTeX backend.
