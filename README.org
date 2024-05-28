@@ -59,7 +59,7 @@ following options are added or changed from their default LaTeX export values:
   - =none= :: Remove both the background and footer images.
   - =print= :: Load only the footer images.
 - =:no-multitoc= :: Boolean. Don't use the multi-column table of contents (default =f=).
-- =:highcontrast= :: Boolean. Use the high-contrast mode of the template (default =f=).
+- =:high-contrast= :: Boolean. Use the high-contrast mode of the template (default =f=).
 
 ** Customisation
 

@@ -414,7 +414,7 @@ contextual information."
   '((:justified nil "justified" t t)
     (:layout nil "layout" t nil)
     (:with-bg nil "bg" "full" t)
-    (:with-no-multitoc nil "nomultitoc" nil t)
+    (:with-no-multitoc nil "no-multitoc" nil t)
     (:with-high-contrast nil "high-contrast" nil t)
     (:with-title nil "title" org-export-with-title t)
     (:headline-levels nil "H" 5 t)
