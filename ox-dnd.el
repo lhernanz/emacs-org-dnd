@@ -15,24 +15,67 @@
   instead of the `dndbook' class."
   :group 'org-dnd)
 
-(unless (assoc "dnd" org-latex-classes)
-  (add-to-list
-   'org-latex-classes
-   `("dnd"
-     ,(concat
-       (format
-        "\\documentclass[10pt,twoside,twocolumn,openany[CO]]{%s}
+(defcustom org-dnd-latex-preamble
+  "\\documentclass[10pt,twoside,twocolumn,openany[CO],notitlepage,nodeprecatedcode]{%s}
 [NO-DEFAULT-PACKAGES]
+
 \\usepackage[AUTO]{babel}
 \\usepackage[utf8]{inputenc}
-\\usepackage{hyperref}
+\\usepackage[hidelinks]{hyperref}
+\\usepackage{stfloats}
+\\usepackage{titling}
+\\pretitle{\\begin{center}\\DndFontTitle\\DndTitleContour}
+\\posttitle{\\par\\end{center}}
+\\preauthor{\\begin{center}\\DndFontSubtitle\\DndSubtitleContour}
+\\postauthor{\\end{center}}
+\\usetikzlibrary{intersections}
+\\usepackage[singlelinecheck=false]{caption}
+\\captionsetup[table]{labelformat=empty,font={sf,sc,bf,},skip=0pt}
 \\newcolumntype{H}{>{\\setbox0=\\hbox\\bgroup}c<{\\egroup}@{}}"
+  "The common LaTeX preamble that will be added to all dnd classes.
+Notice that this is a template that will be used with the format
+function where it will get the name of the class"
+  :group 'org-dnd
+  :type 'string)
+
+(defcustom org-dnd-latex-toc-command "{\\let\\clearpage\\relax \\tableofcontents}\n\n"
+  "LaTeX command to set the table of contents, list of figures, etc.
+This command only applies to the table of contents generated with
+the toc:nil option, not to those generated with #+TOC keyword."
+  :group 'org-dnd
+  :type 'string)
+
+(unless (assoc "dndbook" org-latex-classes)
+  (add-to-list
+   'org-latex-classes
+   `("dndbook"
+     ,(concat
+       (format
+        org-dnd-latex-preamble
         (if org-dnd-use-package "book" "dndbook"))
        (when org-dnd-use-package "\\n\\usepackage{dnd}"))
      ("\\chapter{%s}" . "\\chapter*{%s}")
      ("\\section{%s}" . "\\section*{%s}")
      ("\\subsection{%s}" . "\\subsection*{%s}")
-     ("\\subsubsection{%s}" . "\\subsubsection*{%s}"))))
+     ("\\subsubsection{%s}" . "\\subsubsection*{%s}")
+     ("\\paragraph{%s}" . "\\paragraph*{%s}")
+     )
+   )
+   (add-to-list
+    'org-latex-classes
+   `("dndarticle"
+     ,(concat
+       (format
+        org-dnd-latex-preamble
+        "dndarticle")
+       )
+     ("\\section{%s}" . "\\section*{%s}")
+     ("\\subsection{%s}" . "\\subsection*{%s}")
+     ("\\subsubsection{%s}" . "\\subsubsection*{%s}")
+     ("\\paragraph{%s}" . "\\paragraph*{%s}")
+     ("\\subparagraph{%s}" . "\\subparagraph*{%s}"))
+     )
+   )
 
 (defun ordinal (n)
   (let ((str (if (numberp n) (number-to-string n) n)))
