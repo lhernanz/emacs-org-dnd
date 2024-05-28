@@ -151,16 +151,14 @@ contextual information."
      "|"
      "\n"
      (replace-regexp-in-string
-      "\\\\\\(begin\\|end\\){description}"
+      "\\\\\\(begin\\|end\\){\\(description\\|itemize\\)}"
       ""
       (replace-regexp-in-string
        "\\\\item\\[{\\([^}]*\\)}] \\(.+?\\)|\\\\"
-;;       "\\\\DndMonsterAction{\\1}|\\2|\\\\"
-       "\\\\begin{monsteraction}[\\1]|\\2|\\\\end{monsteraction}|\\\\"
+       "\\\\DndMonsterAction{\\1}|\\2\\\\par|\\\\"
        (replace-regexp-in-string
         "\\\\item\\[{\\([^}]*\\)}] \\(.+?\\)|\\\\"
-;;        "\\\\DndMonsterAction{\\1}|\\2\\\\"
-        "\\\\begin{monsteraction}[\\1]|\\2|\\\\end{monsteraction}|\\\\"
+        "\\\\DndMonsterAction{\\1}|\\2\\\\par|\\\\"
         (replace-regexp-in-string
          "\\\\item \\([^|]*\\)"
          "\\\\DndMonsterSection{\\1}"
@@ -250,7 +248,6 @@ contextual information."
                (when langs (format "languages = {%s},\n" langs))
                (format "challenge = {%s},\n" (or cr 0))
                "]\n"))
-     ;;(message contents)
      ;; Abilities and actions
      (org-dnd--add-legendary-action-text
       name
