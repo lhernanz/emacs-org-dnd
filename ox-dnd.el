@@ -302,14 +302,16 @@ holding export options."
   (let* ((just (plist-get info :justified))
          (layout (plist-get info :layout))
          (bg (plist-get info :with-bg))
-         (multitoc (plist-get info :with-multitoc))
+         (no-multitoc (plist-get info :with-no-multitoc))
+         (high-contrast (plist-get info :with-high-contrast))
          (class-options
           (concat
            (when just "justified,")
            (when bg (format "bg=%s," bg))
            (when (and org-dnd-use-package layout)
              (format "layout=%s," (bool org-dnd-use-package)))
-           (unless multitoc "nomultitoc"))))
+           (if no-multitoc "nomultitoc")
+           (if high-contrast "highcontrast"))))
     (let ((body (org-latex-template contents info)))
       (replace-regexp-in-string
        "\\[CO\\]"
