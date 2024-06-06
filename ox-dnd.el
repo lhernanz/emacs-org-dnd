@@ -392,32 +392,55 @@ contextual information."
 CONTENTS holds the contents of the table.  INFO is a plist holding
 contextual information."
   (let* ((header (car (org-element-property :header table)))
+         (color (org-export-read-attribute :attr_dnd table :color))
+         (lines (org-export-read-attribute :attr_dnd table :lines)) ;; DnDTable is not compatible with lines
+         (format (org-export-read-attribute :attr_dnd table :format))
+         (separate (org-export-read-attribute :attr_dnd table :separate))
          (table-width (list-length
                        (org-element-map table
                            '(table-row)
                          (lambda (row)
 	                         (and (eq (org-element-property :type row) 'standard)
                                 (org-element-contents row))) info 'first-match)))
-         (default-align (concat "l"
-                                (mapconcat 'identity (make-list (1- table-width) "X") "")))
-        (align (if (org-export-read-attribute :attr_dnd table :align)
-                   (org-export-read-attribute :attr_dnd table :align)
-                 default-align))
-        (color (org-export-read-attribute :attr_dnd table :color))
-        (lines (org-export-read-attribute :attr_dnd table :lines))
-        (separate (org-export-read-attribute :attr_dnd table :separate)))
+         (column-format (cond ;; ornamental does not support justification
+                         ((equal format "ornamental") "l")
+                         (t "X")
+                         ))
+         (default-align (concat "c"
+                                (mapconcat 'identity (make-list (1- table-width) column-format) "")))
+         (align (cond
+                 ((org-export-read-attribute :attr_dnd table :align))
+                 ((equal format "long") "")  ;; long does auto-alignment
+                 (t default-align)))
+         (color-header (if color (format "[color=%s]" color) ""))
+         ;; long does not support headers
+         (header-header (if (and header (not (equal format "long"))) (format "[header=%s]" header) ""))
+         (align-header (if align (format
+                                  (cond
+                                   ((equal format "long") "[%s]")
+                                   (t "{%s}")
+                                   )
+                                  align) ""))
+         (format-header (cond
+                         ((equal format "alt") "DndAltTable")
+                         ((equal format "ornamental") "ornamentedtabular")
+                         ((equal format "long") "dndlongtable")
+                         (t "DndTable")
+                         ))
+        )
     (format
      "%s"
      (replace-regexp-in-string
       "begin{tabular.*"
-      (format "begin{DndTable}%s%s%s\\\\\\\\"
-              (if color (format "[color=%s]" color) "")
-              (if header (format "[header=%s]" header) "")
-              (if align (format "{%s}" align) "")
+      (format "begin{%s}%s%s%s"
+              format-header
+              color-header
+              header-header
+              align-header
               )
       (replace-regexp-in-string
-       "end{tabular}"
-       "end{DndTable}"
+       "end{tabular.*}"
+       (format "end{%s}" format-header)
        (replace-regexp-in-string
         "{table}"
         "{table*}"
