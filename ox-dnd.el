@@ -55,13 +55,39 @@ the toc:nil option, not to those generated with #+TOC keyword."
   (add-to-list
    'org-latex-classes
    `("dndbook"
-     `(concat
+     ,(concat
        (format
         org-dnd-latex-preamble
         (if org-dnd-use-package "book" "dndbook"))
        org-dndbook-latex-preamble
        (when org-dnd-use-package "\\n\\usepackage{dnd}"))
+     ("\\part{%s}" . "\\part*{%s}")
+     ("\\chapter{%s}" . "\\chapter*{%s}")
+     ("\\section{%s}" . "\\section*{%s}")
+     ("\\subsection{%s}" . "\\subsection*{%s}")
+     ("\\subsubsection{%s}" . "\\subsubsection*{%s}")
+     ("\\paragraph{%s}" . "\\paragraph*{%s}")
+     ("\\subparagraph{%s}" . "\\subparagraph*{%s}")
+     )))
+
+(unless (assoc "dndbookbrief" org-latex-classes)
+  (add-to-list
+   'org-latex-classes
+   `("dndbook"
+     ,(concat
+       (format
+        org-dnd-latex-preamble
+        (if org-dnd-use-package "book" "dndbook"))
+       org-dndbook-latex-preamble
+       (when org-dnd-use-package "\\n\\usepackage{dnd}"))
+     ("\\chapter{%s}" . "\\chapter*{%s}")
+     ("\\section{%s}" . "\\section*{%s}")
+     ("\\subsection{%s}" . "\\subsection*{%s}")
+     ("\\subsubsection{%s}" . "\\subsubsection*{%s}")
+     ("\\paragraph{%s}" . "\\paragraph*{%s}")
+     ("\\subparagraph{%s}" . "\\subparagraph*{%s}")
    )))
+
 (unless (assoc "dndarticle" org-latex-classes)
    (add-to-list
     'org-latex-classes
