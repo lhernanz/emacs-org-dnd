@@ -448,16 +448,18 @@ contextual information."
          "\\\\\\(begin\\|end\\){center}\n?"
          ""
          (replace-regexp-in-string
-          (format "\\\\centering%s"
-                  (if lines "" "\\|\\\\toprule\\|\\\\bottomrule")
+          (format "\\\\centering\n?%s"
+                  (if lines "" "\\|\\\\toprule\n?\\|\\\\bottomrule\n?")
                   )
           ""
           (replace-regexp-in-string
-           "\\\\hline"
+           "\\\\hline\n?"
            (if (not separate) ""
-             (format "\\\\end{DndTable}\n\\\\begin{DndTable}%s%s"
-                     (if align (format "[%s]" align) "")
-                     (if color (format "[%s]" color) "")))
+             (format "\\\\end{%s}\n\\\\begin{%s}%s%s"
+                     format-header
+                     format-header
+                     align-header
+                     color-header))
            (org-latex-table table contents info))))))))))
 
 (org-export-define-derived-backend 'dnd 'latex
