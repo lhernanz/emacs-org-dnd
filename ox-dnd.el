@@ -34,10 +34,9 @@ function where it will get the name of the class"
 
 (defcustom org-dndbook-latex-preamble
   "\\usepackage{titling}
-\\pretitle{\\begin{center}\\DndFontTitle}
+\\pretitle{\\begin{center}\\Huge
+\\scshape \\fontfamily{pbk}\\fontsize{50}{40}\\selectfont}
 \\posttitle{\\par\\end{center}}
-\\preauthor{\\begin{center}\\DndFontSubtitle}
-\\postauthor{\\end{center}}
 "
   "The LaTeX preamble that will be added to the dndbook class.
 Notice that this will be inserted after the common part of the template."
