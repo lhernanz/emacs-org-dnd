@@ -1,2 +1,8 @@
 example/texput*
 /example/mode.aux
+/example/*.aux
+/example/auto/
+/example/*.log
+/example/*.fdb_latexmk
+/example/*.out
+/example/*.toc
