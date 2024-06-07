@@ -376,17 +376,31 @@ contextual information."
   "Transcode a HEADLINE element from Org to LaTeX.
 CONTENTS holds the contents of the headline.  INFO is a plist
 holding contextual information."
-  (let ((text (org-latex-headline headline contents info))
-        (tags (org-element-property :tags headline)))
-    (if (member "map" tags)
+  (let* ((text (org-latex-headline headline contents info))
+        (tags (org-element-property :tags headline))
+        (section (cond
+                  ((member "map" tags) "DndArea")
+                  ((member "letteredmap" tags) "letteredarea")
+                  ((member "numberedmap" tags) "numberedarea")
+                  (t nil)
+                  ))
+        (section-name (if section (format "\\\\%s{" section)))
+        (subsection-name (if section-name (thread-last
+                                            section-name
+                                            (string-replace "area" "subarea")
+                                            (string-replace "Area" "SubArea")
+                                            ))
+                         )
+        )
+    (if section
         (progn
-          (org-element-put-property headline :tags (remove "map" tags))
+          (org-element-put-property headline :tags (seq-difference tags '("map" "letteredmap" "numberedmap")))
           (replace-regexp-in-string
            "\\\\subsubsection{"
-           "\\\\DndSubArea{"
+           subsection-name
           (replace-regexp-in-string
            "\\\\subsection{"
-           "\\\\DndArea{"
+           section-name
            (org-latex-headline headline contents info))))
       (org-latex-headline headline contents info))))
 
