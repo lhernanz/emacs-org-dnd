@@ -477,7 +477,7 @@ contextual information."
     (:with-no-multitoc nil "no-multitoc" nil t)
     (:with-high-contrast nil "high-contrast" nil t)
     (:with-title nil "title" org-export-with-title t)
-    (:headline-levels nil "H" 5 t)
+    (:headline-levels nil "H" 7 t)
     (:latex-caption-above nil nil nil)
     (:latex-toc-command nil nil org-dnd-latex-toc-command)
     )
