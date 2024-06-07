@@ -461,6 +461,7 @@ CONTENTS holds the contents of the block.  INFO is a plist holding
 contextual information."
   (let* ((type (downcase (org-element-property :type special-block)))
          (name (org-element-property :name special-block))
+         (toc (org-export-read-attribute :attr_dnd special-block :toc))
          ;; Get the first line of the content as title if name is null
          (title (if name name
                   (car (split-string contents "\n" t nil))
@@ -474,11 +475,13 @@ contextual information."
       ("commentbox"
        (concat (format "\\begin{%s}{%s}" "DndComment" title)
                (org-latex--caption/label-string special-block info)
+               (if toc (format "\\tocside{%s}" title))
                content
-               (format "\\end{%s}""DndComment")))
+               (format "\\end{%s}" "DndComment")))
       ("sidebar"
        (concat (format "\\begin{%s}[float=!h]{%s}" "DndSidebar" title)
                (org-latex--caption/label-string special-block info)
+               (if toc (format "\\tocside{%s}" title))
                content
                (format "\\end{%s}\n" "DndSidebar")))
       ("readaloud"
@@ -487,7 +490,8 @@ contextual information."
                (format "\\end{%s}" "DndReadAloud")))
       ("spell" (org-dnd-spell special-block contents info))
       ("item" (org-dnd--item-block special-block contents info))
-      ("subtitle" (org-dnd--subtitle-block special-block contents info))
+      ("feat" (org-dnd--feat-block special-block contents info))
+      ("quotes" (org-dnd--quotes-block special-block contents info))
       ("monster" (org-dnd-monsterbox special-block contents info))
       (_ (org-latex-special-block special-block contents info)))))
 
@@ -498,7 +502,7 @@ contextual information."
   (let* ((header (car (org-element-property :header table)))
          (color (org-export-read-attribute :attr_dnd table :color))
          (lines (org-export-read-attribute :attr_dnd table :lines)) ;; DnDTable is not compatible with lines
-         (format (org-export-read-attribute :attr_dnd table :format))
+         (table-type (org-export-read-attribute :attr_dnd table :format))
          (separate (org-export-read-attribute :attr_dnd table :separate))
          (table-width (list-length
                        (org-element-map table
@@ -507,31 +511,42 @@ contextual information."
 	                         (and (eq (org-element-property :type row) 'standard)
                                 (org-element-contents row))) info 'first-match)))
          (column-format (cond ;; ornamental does not support justification
-                         ((equal format "ornamental") "l")
+                         ((equal table-type "ornamental") "l")
                          (t "X")
                          ))
          (default-align (concat "c"
                                 (mapconcat 'identity (make-list (1- table-width) column-format) "")))
          (align (cond
                  ((org-export-read-attribute :attr_dnd table :align))
-                 ((equal format "long") "")  ;; long does auto-alignment
+                 ((equal table-type "long") "")  ;; long does auto-alignment
                  (t default-align)))
          (color-header (if color (format "[color=%s]" color) ""))
          ;; long does not support headers
-         (header-header (if (and header (not (equal format "long"))) (format "[header=%s]" header) ""))
+         (header-header (if header (format
+                                    (cond
+                                     ((equal table-type "long") "")
+                                     ((equal table-type "ornamental") "[title=%s]")
+                                     (t "[header=%s]")
+                                     ) header
+                                    )
+                          ""))
          (align-header (if align (format
                                   (cond
-                                   ((equal format "long") "[%s]")
+                                   ((equal table-type "long") "[%s]")
                                    (t "{%s}")
                                    )
-                                  align) ""))
+                                  align)
+                         ""))
          (format-header (cond
-                         ((equal format "alt") "DndAltTable")
-                         ((equal format "ornamental") "ornamentedtabular")
-                         ((equal format "long") "dndlongtable")
+                         ((equal table-type "alt") "DndAltTable")
+                         ((equal table-type "ornamental") "ornamentedtabular")
+                         ((equal table-type "long") "dndlongtable")
                          (t "DndTable")
                          ))
         )
+    (if (equal table-type "ornamental")
+        ;; ornamental has the headers in reverse order :(
+        (setq align-header (prog1 header-header (setq header-header align-header))))
     (format
      "%s"
      (replace-regexp-in-string
@@ -547,7 +562,7 @@ contextual information."
        (format "end{%s}" format-header)
        (replace-regexp-in-string
         "{table}"
-        "{table*}"
+        "{table}" ;; TODO Review if we want to have table*
         (replace-regexp-in-string
          "\\\\\\(begin\\|end\\){center}\n?"
          ""
@@ -598,6 +613,7 @@ contextual information."
 
 If narrowing is active in the current buffer, only export its
 narrowed part.
+
 
 If a region is active, export that region.
 
