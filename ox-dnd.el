@@ -15,6 +15,39 @@
   instead of the `dndbook' class."
   :group 'org-dnd)
 
+(defcustom org-dnd--dice-regexp
+  (rx
+   word-start
+   (group (one-or-more digit))
+   "d"
+   (group (one-or-more digit))
+   (optional
+    (zero-or-more space)
+    (group (or "+" "-"))
+    (zero-or-more space)
+    (group (one-or-more digit))
+    )
+   word-end
+   )
+  "Regexp that identifies 1d6+2 type expressions"
+  :group 'org-dnd
+  )
+
+(defcustom org-dnd--full-dice-regexp
+  (rx
+   word-start
+   (group (one-or-more digit))
+   (zero-or-more space)
+   "("
+   (group (regexp org-dnd--dice-regexp))
+   ")"
+   word-end
+   )
+  "Regexp that identifies 5 (1d6+2) type expressions"
+  :group 'org-dnd
+  )
+
+
 (defcustom org-dnd-latex-preamble
   "\\documentclass[10pt,twoside,twocolumn,openany[CO],notitlepage,nodeprecatedcode]{%s}
 [NO-DEFAULT-PACKAGES]
@@ -104,7 +137,17 @@ the toc:nil option, not to those generated with #+TOC keyword."
      )
    )
 
-(defun ordinal (n)
+(defun org-dnd--add-dice (contents)
+  "Add the right markup to dice expressions. Remove full dice expressions first
+to avoid redundancies."
+  (thread-last
+    contents
+    (replace-regexp-in-string org-dnd--full-dice-regexp "\\2")
+    (replace-regexp-in-string org-dnd--dice-regexp "\\\\DndDice{\\&}")
+  ))
+
+(defun org-dnd--ordinal (n)
+  "Add the right ordinal suffix to the numbers"
   (let ((str (if (numberp n) (number-to-string n) n)))
     (concat str
             (pcase (last str)
@@ -117,7 +160,7 @@ the toc:nil option, not to those generated with #+TOC keyword."
   (org-trim
    (format "%s%s"
            (if level
-               (concat (ordinal level) "-level ")
+               (concat (org-dnd--ordinal level) "-level ")
              "")
            (or (downcase school) ""))))
 
@@ -142,32 +185,80 @@ contextual information."
             contents
             )))
 
-;; Subtitle is a deprecated option in the latex template
-(defun org-dnd--subtitle-block (subtitle contents info)
-  "Transcode a SUBTITLE-BLOCK element to D&D LaTeX.
+(defun org-dnd--add-colon-to-description (contents)
+  "Add a colon after every element of a description list."
+  (replace-regexp-in-string
+   "\\\\item\\[{\\([^}]+\\)}\\]"
+   "\\\\item[\\1:]" contents))
+
+(defun org-dnd--compact-description (contents)
+  "Reduce the vertical space in a description list"
+  (replace-regexp-in-string
+   "\\\\begin{description}"
+   "\\\\begin{description}[nosep, after = { \\\\vspace{4pt plus 1pt minus 1pt} }]"
+   contents))
+
+(defun org-dnd--format-block (contents)
+  "Apply different operations to format a block of text"
+  (thread-last
+    contents
+    (org-dnd--add-colon-to-description)
+    (org-dnd--compact-description)
+    (org-dnd--add-dice))
+  )
+
+(defun org-dnd--quotes-block (item contents info)
+  "Transcode a QUOTES-BLOCK element to D&D LaTeX.
 CONTENTS holds the contents of the block.  INFO is a plist holding
 contextual information."
-  (let ((content (split-string contents "\n" t nil)))
-    (format "\\subtitlesection{%s}{%s}"
-            (car content)
-            (car (cdr content)))))
+  (let* (
+         (lines (split-string contents "\n" t nil))
+         (first-line (car lines))
+         (last-line (car (last lines)))
+         (body (string-join (butlast (cdr lines)) "\n"))
+         )
+    (format "\\DndQuote{%s}\n{%s}\n{%s}"
+            first-line
+            body
+            last-line
+            )
+      )
+  )
+
+(defun org-dnd--feat-block (item contents info)
+  "Transcode a FEAT-BLOCK element to D&D LaTeX.
+CONTENTS holds the contents of the block.  INFO is a plist holding
+contextual information."
+  (let* (
+         (lines (split-string contents "\n" t nil))
+         (first-line (car lines))
+         (second-line (car (cdr lines)))
+         (body (string-join (cdr (cdr lines)) "\n"))
+         )
+    (format "\\DndFeatHeader{%s}[%s]\n{%s}"
+            first-line
+            second-line
+            (org-dnd--format-block body)
+            )
+    )
+  )
 
 (defun org-dnd--item-block (item contents info)
   "Transcode a ITEM-BLOCK element to D&D LaTeX.
 CONTENTS holds the contents of the block.  INFO is a plist holding
 contextual information."
-  (let ((content (split-string contents "\n" t nil)))
+  (let* (
+         (lines (split-string contents "\n" t nil))
+         (first-line (car lines))
+         (second-line (car (cdr lines)))
+         (body (string-join (cdr (cdr lines)) "\n"))
+         )
     (format "\\DndItemHeader{%s}{%s}\n%s"
-            (car content)
-            (car (cdr content))
-            (replace-regexp-in-string
-             "\\\\item\\[{\\([^}]+\\)}\\]"
-             "\\\\item[\\1 :]"
-             (replace-regexp-in-string
-              "\\\\begin{description}"
-              "\\\\begin{description}[nosep, after = { \\\\vspace{4pt plus 1pt minus 1pt} }]"
-              (string-join (cdr (cdr content)) "\n")))
-            )))
+            first-line
+            second-line
+            (org-dnd--format-block body)
+            )
+    ))
 
 (defun org-dnd--extract-actions (content)
   (org-trim
