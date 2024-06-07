@@ -1,237 +1,363 @@
-#+TITLE: Example
-#+LATEX_CLASS: dnd
-#+LATEX_HEADER: \usepackage{lipsum}
-#+OPTIONS: bg:full justified:nil toc:nil
+#+title: The Dark \LaTeX
+#+subtitle: An Example of the Emacs Org Dnd Mode
+#+author: The Emacs Org Dnd team
+#+latex_class: dndbook
+#+latex_header: \usepackage{lipsum}
+#+options: bg:full justified:nil toc:2 title:t date:nil
+* Layouts
+** Templates
+   This package provides three different templates. They differ in the underlying \LaTeX{} classes that they use and in the way that they map the different Org headers to \LaTeX{} headers.
+*** dndbook
+    This is the most complete one. It will use the =dndbook= \LaTeX{} class and it will map the headers starting at =part= and going down from there.
+*** dndbookbrief
+    This is an alternative version of the above. It also uses the =dndbook= class, but the first level of headers is mapped to =chapter=. This makes the output more compact as parts uses full pages.
+*** dndarticle
+    This is the best style for short documents and it uses the =dndarticle= class. Top level headers are mapped to =sections=, therefore, there are less levels available than in the others.
+** Sections
+ \DndDropCapLine{T}{his package is designed to aid you in} writing beautifully typeset documents for the fifth edition of the world's greatest roleplaying game. It starts by adjusting the section formatting from the defaults in \LaTeX{} to something a bit more familiar to the reader. The article formatting is displayed above.
+*** Section
 
-* Chapter 1: The Dark \LaTeX
+    Sections break up chapters into large groups of associated text. Sections are defined by using Org headings. Depending on the template selected, the headings will be mapped to different latex section types. See the =org-latex-classes= variable to see how the mappings are done for the different templates.
+**** Subsection
+     Subsections further break down the information for the reader.
+***** Subsubsection
+      Subsubsections are the furthest division of text that still have a block header. Below this level, headers are displayed
+      inline.
+****** Paragraph.
+       The paragraph format is seldom used in the core books, but is available if you prefer it to the “normal” style.
+******* Subparagraph
+        The subparagraph format with the paragraph indent is likely going to be more familiar to the reader.
+***** Hanging indent feature
+      The description list allows hanging indented lists of options, such as those used for class features, background
+      skill/tool proficiency options, and sometimes area features, for example:
+      - Doors: :: The doors are made from thick lumber and are unlocked.
+      - Light: :: The area is illuminated by candles placed in sconces on the walls. Each candle has had a continual flame spell cast on it. Dispelling a flame is rumoured to give grievous offence to the host.
+      - Ventilation: :: All areas contain an adequate air supply. The air is renewed via lung-like sacks that cling to the ceiling.
+*** Special Sections
+    The module also includes functions to aid in the proper typesetting of multi-line section headers: =\DndFeatHeader= for feats, =\DndItemHeader= magic items and traps, and =\DndSpellHeader= for spells.
 
-** Main Section
-\lipsum[2]
+ #+begin_feat
+ Typesetting Savant
+ Prerequisite: a distribution
 
-#+BEGIN_QUOTEBOX
-As you approach this template you get a sense that the blood and tears of many generations went into its making. A warm feeling welcomes you as you type your first words.
-#+END_QUOTEBOX
+ You have acquired a package which aids in typesetting source material for one of your favorite games, giving you the
+ following benefits:
+ - You have advantage on Intelligence checks to typeset new content.
+ - When you fail an Intelligence check to typeset new content, you can ask questions online at the package’s website.
 
-*** Fun with boxes
-**** Even more fun!
+ Some other important features:
 
-#+NAME: This Is a Comment Box!
-#+BEGIN_COMMENTBOX
-A =commentbox= is a box for minimal highlighting of text. It lacks the ornamentation of =paperbox=, but it can handle being broken over a column.
-#+END_COMMENTBOX
+ - Doors :: The doors are made from thick lumber and are unlocked.
+ - Light :: The area is illuminated by candles placed in sconces on the walls. Each candle has had a continual flame spell cast on it. Dispelling a flame is rumoured to give grievous offence to the host.
+ - Ventilation :: All areas contain an adequate air supply. The air is renewed via lung-like sacks that cling to the ceiling.
+ #+end_feat
 
-#+BEGIN_SUBTITLE
-Weapon, +1, +2, or +3
-Weapon (any), uncommon (+1), rare (+2), or very rare (+3)
-#+END_SUBTITLE
-# Need a subtitle
+ #+BEGIN_item
+ Foo’s Quill
+ Wondrous item, rare
 
-\lipsum[3]
+ This quill has 3 charges. While holding it, you can use an action to expend 1 of its charges. The quill leaps from your
+ hand and writes a contract applicable to your situation.
 
-#+NAME: Behold, the Paperbox!
-#+BEGIN_PAPERBOX
-The =paperbox= is used as a sidebar. It does not break over columns and is best used with a figure environment to float it to one corner of the page where the surrounding text can then flow around it.
-#+END_PAPERBOX
+ The quill regains 1d3 expended charges daily at dawn.
+ #+END_item
 
-#+HEADER: Nice Table
-| *Table head* | *Table head* |
-| Some value | Some value |
-| Some value | Some value |
-| Some value | Some value |
+ #+NAME: Beautiful Typesetting
+ #+ATTR_SPELL: :level 4 :school illusion :range 5 feet :cast 1 action :duration Until dispelled :comp S, M (ink and parchment, which the spell consumes)
+ #+BEGIN_SPELL
+ You are able to transform a written message of any length into a beautiful
+ scroll. All creatures within range that can see the scroll must make a wisdom
+ saving throw or be charmed by you until the spell ends.
 
-** Spells
+ While the creature is charmed by you, they cannot take their eyes off the
+ scroll and cannot willingly move away from the scroll. Also, the targets can
+ make a wisdom saving throw at the end of each of their turns. On a success,
+ they are no longer charmed.
+ #+END_SPELL
 
-#+NAME: Beautiful Typesetting
-#+ATTR_SPELL: :level 4 :school illusion :range 5 feet :cast 1 action :duration Until dispelled :comp S, M (ink and parchment, which the spell consumes)
-#+BEGIN_SPELL
-You are able to transform a written message of any length into a beautiful
-scroll. All creatures within range that can see the scroll must make a wisdom
-saving throw or be charmed by you until the spell ends.
+ #+begin_quotes
+ "Sometimes, what you need, what you want
+ and what you have at this time turn out to be the same thing: An uplifting quote."
+ The adventurer
+ #+end_quotes
 
-While the creature is charmed by you, they cannot take their eyes off the
-scroll and cannot willingly move away from the scroll. Also, the targets can
-make a wisdom saving throw at the end of each of their turns. On a success,
-they are no longer charmed.
-#+END_SPELL
+*** Map Regions                                                            :map:
 
-\lipsum[2]
+ The map region commands provides automatic numbering of areas. You just need to add the /map/ tag to your headings and they will be considered part of a map. Notice that only headings equivalent to certain levels in the hierarchy (=subsection= and =subsubsection= when translated to \LaTeX) will be tagged in this way.
 
-#+NAME: Monster Foo
-#+ATTR_MONSTER_INFO: :size medium :race metasyntactic variable :subrace goblinoid :alignment neutral evil
-#+ATTR_MONSTER_BASICS: :ac 9 (12 with \emph{mage armor}) :hp 3d8+3 :speed 30 :fly 30
-#+ATTR_MONSTER_STATS: :str 12 :dex 8 :con 13 :int 10 :wis 14 :cha 15
-#+ATTR_MONSTER_DETAILS: :langs Common, Goblin :senses darkvision 60ft., passive Perception 10 :cr 1
-#+BEGIN_MONSTER
-- Innate Spellcasting :: Foo's spellcasting ability is Charisma (spell save DC 12, +4 to hit with spell attacks). It can innately cast the following spells, requiring no material components:
-  - At will :: /misty step/
-  - 3/day :: /fog cloud/, /rope trick/
-  - 1/day :: /identify/
-- Spellcasting :: Foo is a 3rd-level spellcaster. Its spellcasting ability is Charisma (spell save DC 12, +4 to hit with spell attacks). It has the following sorcerer spells prepared:
-  - At will :: /blade ward/, /fire bolt/, /light/, /shocking grasp/
-  - 1st level (4 slots) :: /burning hands/, /mage armor/
-  - 2nd level (2 slots) :: /scorching ray/
-- Actions
-  - Multiattack :: The foo makes two melee attacks.
-  - Dagger :: /Melee or Ranged Weapon Attack:/ +3 to hit, reach 5 ft. or range 20/60ft., one target. /Hit:/ \dice{1d4 + 1} piercing damage.
-  - Flame Tongue Longsword :: /Melee Weapon Attack:/ +3 to hit, reach 5 ft., one target. /Hit:/ \dice{1d4 + 1} slashing damage plus \dice{2d6} fire damage, or \dice{1d10 + 1} slashing damage plus \dice{2d6} fire damage if used with two hands.
-  - Assassin's Light Crossbow :: /Ranged Weapon Attack:/ +0 to hit, range 80/320 ft., one target. /Hit:/ \dice{1d8} piercing damage, and the target must make a DC 15 Constitution saving throw, taking \dice{7d6} poison damage on a failed save, or half as much damage on a successful one.
-#+END_MONSTER
+**** Village of Hommlet
 
+ This is the village of hommlet.
+
+***** Inn of the Welcome Wench
+
+ Inside the village is the inn of the Welcome Wench.
+
+***** Blacksmith's Forge
+
+ There's a blacksmith in town, too.
+
+**** Foo's Castle
+
+ This is foo's home, a hovel of mud and sticks.
+
+***** Moat
+
+ This ditch has a board spanning it.
+
+***** Entrance
+
+ A five-foot hole reveals the dirt floor illuminated by a hole in the roof.
+
+*** Alternative Map Region Styles
+    Published modules sometimes use plain numbers for locations, sometimes plain letters, and sometimes they prefix a
+character to the front of the numbers. The following options can be used to display in these forms. Notice that only the
+second heading has number/letters vs the two levels from the standard style:
+
+**** Numbered Dungeon                                              :numberedmap:
+Areas in the Numbered Dungeon have sequential numbers. This is done using
+the /numberedmap/ tag in your headers:
+
+***** Entry
+The entry.
+***** Trap
+The trap.
+***** Fight
+The fight.
+***** Exit
+The exit.
+**** Lettered Dungeon                                              :letteredmap:
+Same as above but using the /letteredmap/ tag in the headers:
+
+***** Entry
+The entry.
+***** Trap
+The trap.
+***** Fight
+The fight.
+***** Exit
+The exit.
+** Text Boxes
+   The module has three environments for setting text apart so that it is drawn to the reader's attention. =readaloud= is used for text that a game master would read aloud.
+
+ #+BEGIN_readaloud
+ As you approach this template you get a sense that the blood and tears of many generations went into its making. A warm feeling welcomes you as you type your first words.
+ #+END_readaloud
+*** As an Aside
+
+    The other two environments are the =commentbox= and the =sidebar=. The =commentbox= is breakable and can safely be used inline in the text.
+
+ #+name: This Is a Comment Box!
+ #+begin_commentbox
+ A =commentbox= is a box for minimal highlighting of text. It lacks the ornamentation of =sidebar=, but it can handle being broken over a column.
+
+ You can use the =name= property to specify the title. If you do not, the first line of the content will be taken as the title.
+ #+end_commentbox
+
+ The =sidebar= is not breakable and is best used floated toward a page corner as it is below.
+
+#+attr_dnd: :toc t
+#+name: Behold, the Sidebar!
+ #+BEGIN_sidebar
+ The =sidebar= is used as a sidebar. It does not break over columns and is best used with a figure environment to float it to one corner of the page where the surrounding text can then flow around it.
+
+ You can use the =toc= property to add the entry to the table of contents for both =commentbox= and =sidebar=.
+ #+END_sidebar
+
+*** Tables
+ #+HEADER: Nice Table
+ | Table head | Table head |
+ | Some value | Some value |
+ | Some value | Some value |
+ | Some value | Some value |
+
+ #+ATTR_DND: :format ornamental
+ #+HEADER: Ornamental table
+ | *Table head* | *Table head* |
+ | Some value | Some value |
+ | Some value | Some value |
+ | Some value | Some value |
+
+ #+attr_latex: :options {2}
+     #+begin_multicols
+ #+ATTR_DND: :format alt
+ #+HEADER: Left table
+ | *Head*       | *Head*       |
+ | Value      | Value      |
+ | Value      | Value      |
+ | Value      | Value      |
+
+ #+ATTR_DND: :format alt
+ #+HEADER: Right table
+ | *Head*       | *Head*       |
+ | Value      | Value      |
+ | Value      | Value      |
+ | Value      | Value      |
+     #+end_multicols
+
+
+ #+attr_latex: :options {2}
+     #+begin_multicols
+ #+ATTR_DND: :format alt
+ #+HEADER: Left~table~with~spanning
+ | *Head*       | *Head*       |
+ | Value      | Value      |
+ | Value      | Value      |
+ | Value      | Value      |
+
+ #+ATTR_DND: :format alt
+ #+HEADER: ~
+ | *Head*  | *Head*  |
+ | Value | Value |
+ | Value | Value |
+ | Value | Value |
+     #+end_multicols
+
+
+ #+attr_latex: :options {8cm}
+ #+begin_minipage
+ #+HEADER: Nice Table with footnote
+ | *Table head* | *Table head*    |
+ | Some value | Some value    |
+ | Some value | Some value    |
+ | Some value | Some value [fn:1] |
+
+[fn:1] This is a footnote
+ #+end_minipage
+
+ #+ATTR_DND: :format long :align c p{0.5\\linewidth} p{0.20\\linewidth}
+ #+HEADER: Long table
+ | *Table head* | *Table head*                                                | *Table head* |
+ | Some value | Some very long value that might expand more than one line | Some value   |
+ | Some value | Some value                                                | Some value   |
+ | Some value | Some value                                                |              |
+ | Some value | Some value                                                | Some value   |
+ | Some value | Some value                                                |              |
+ | Some value | Some value                                                | Some value   |
+ | Some value | Some value                                                |              |
+ | Some value | Some value                                                |              |
+ | Some value | Some value                                                |              |
+ | Some value | Some value                                                |              |
+ | Some value | Some value                                                |              |
+ | Some value | Some value                                                |              |
+ | Some value | Some value                                                |              |
+ | Some value | Some value                                                |              |
+ | Some value | Some value                                                |              |
+ | Some value | Some value                                                |              |
+ | Some value | Some value                                                |              |
+ | Some value | Some value                                                |              |
+ | Some value | Some value                                                |              |
+ | Some value | Some value                                                |              |
+ | Some value | Some value                                                |              |
+ | Some value | Some value                                                |              |
+ | Some value | Some value                                                |              |
+ | Some value | Some value                                                |              |
+ | Some value | Some value                                                |              |
+ | Some value | Some value                                                |              |
+ | Some value | Some value                                                |              |
+ | Some value | Some value                                                |              |
+ | Some value | Some value                                                |              |
+ | Some value | Some value                                                |              |
+ | Some value | Some value                                                |              |
+ | Some value | Some value                                                |              |
+
+ #+NAME: Monster Foo
+ #+ATTR_MONSTER_INFO: :size medium :race metasyntactic variable :subrace goblinoid :alignment neutral evil
+ #+ATTR_MONSTER_BASICS: :ac 9 (12 with \emph{mage armor}) :hp 3d8+3 :speed 30 :fly 30
+ #+ATTR_MONSTER_STATS: :str 12 :dex 8 :con 13 :int 10 :wis 14 :cha 15
+ #+ATTR_MONSTER_DETAILS: :langs Common, Goblin :senses darkvision 60ft., passive Perception 10 :cr 1
+ #+begin_monster
+ - Innate Spellcasting :: Foo's spellcasting ability is Charisma (spell save DC 12, +4 to hit with spell attacks). It can innately cast the following spells, requiring no material components:
+   - At will :: /misty step/
+   - 3/day :: /fog cloud/, /rope trick/
+   - 1/day :: /identify/
+ - Spellcasting :: Foo is a 3rd-level spellcaster. Its spellcasting ability is Charisma (spell save DC 12, +4 to hit with spell attacks). It has the following sorcerer spells prepared:
+   - At will :: /blade ward/, /fire bolt/, /light/, /shocking grasp/
+   - 1st level (4 slots) :: /burning hands/, /mage armor/
+   - 2nd level (2 slots) :: /scorching ray/
+ - Actions
+   - Multiattack :: The foo makes two melee attacks.
+   - Dagger :: /Melee or Ranged Weapon Attack:/ +3 to hit, reach 5 ft. or range 20/60ft., one target. /Hit:/ \DndDice{1d4 + 1} piercing damage.
+   - Flame Tongue Longsword :: /Melee Weapon Attack:/ +3 to hit, reach 5 ft., one target. /Hit:/ \DndDice{1d4 + 1} slashing damage plus \DndDice{2d6} fire damage, or \DndDice{1d10 + 1} slashing damage plus \DndDice{2d6} fire damage if used with two
+     hands.
+   - Assassin's Light Crossbow :: /Ranged Weapon Attack:/ +0 to hit, range 80/320 ft., one target. /Hit:/ \DndDice{1d8} piercing damage, and the target must make a DC 15 Constitution saving throw, taking \DndDice{7d6} poison damage on a failed save, or half as much damage on a successful one.
+ #+end_monster
+
+* Customizations
 ** Colors
 
-This package provides several global color variables to style =commentbox=, =quotebox=, =paperbox=, and =dndtable= environments.
+ This package provides several global color variables to style =commentbox=, =readaloud=, =sidebar=, and =dndtable= environments.
 
-#+ATTR_DND: :align lX
-| *Color*           | *Description*                                |
-| =commentboxcolor= | Controls =commentbox= background.            |
-| =paperboxcolor=   | Controls =paperbox= background.              |
-| =quoteboxcolor=   | Controls =quotebox= background.              |
-| =tablecolor=      | Controls background of even =dndtable= rows. |
+ #+attr_dnd: :align lX
+ | *Color*           | *Description*                                |
+ | =commentboxcolor= | Controls =commentbox= background.            |
+ | =paperboxcolor=   | Controls =paperbox= background.              |
+ | =quoteboxcolor=   | Controls =quotebox= background.              |
+ | =tablecolor=      | Controls background of even =dndtable= rows. |
 
-See Table [[tab:colors]] for a list of accent colors that match the core books.
+ See Table [[tab:colors]] for a list of accent colors that match the core books.
 
-#+NAME: tab:colors
-#+CAPTION: Colors supported by this package
-#+ATTR_DND: :align XX
-| *Color*                         | *Description*                    |
-| =PhbLightGreen=                 | Light green used in PHB Part 1   |
-| =PhbLightCyan=                  | Light cyan used in PHB Part 2    |
-| =PhbMauve=                      | Pale purple used in PHB Part 3   |
-| =PhbTan=                        | Light brown used in PHB appendix |
-| =DmgLavender=                   | Pale purple used in DMG Part 1   |
-| =DmgCoral=                      | Orange-pink used in DMG Part 2   |
-| =DmgSlateGray= (=DmgSlateGrey=) | Blue-gray used in PHB Part 3     |
-| =DmgLilac=                      | Purple-gray used in DMG appendix |
+ #+name: tab:colors
+ #+caption: Colors supported by this package
+ #+attr_dnd: :align XX
+ | *Color*                                               | *Description*                               |
+ | \rowcolor{PhbLightGreen} =PhbLightGreen=              | Light green used in PHB Part 1            |
+ | \rowcolor{PhbLightCyan} =PhbLightCyan=                | Light cyan used in PHB Part 2             |
+ | \rowcolor{PhbMauve} =PhbMauve=                        | Pale purple used in PHB Part 3            |
+ | \rowcolor{PhbTan} =PhbTan=                            | Light brown used in PHB appendix          |
+ | \rowcolor{DmgLavender} =DmgLavender=                  | Pale purple used in DMG Part 1            |
+ | \rowcolor{DmgCoral} =DmgCoral=                        | Orange-pink used in DMG Part 2            |
+ | \rowcolor{DmgSlateGrey} =DmgSlateGray= (=DmgSlateGrey=) | Blue-gray used in PHB Part 3              |
+ | \rowcolor{DmgLilac} =DmgLilac=                        | Purple-gray used in DMG appendix          |
+ | \rowcolor{BrGreen} =BrGreen=                          | Light-gray used for tables in Basic Rules |
 
-- Use =\setthemecolor[<color>]= to set =themecolor=, =commentcolor=, =paperboxcolor=, and =tablecolor= to a specific color.
-- Calling =\setthemecolor= without an argument sets those colors to the current =themecolor=.
-- =commentbox=, =dndtable=, =paperbox=, and =quoteboxcolor= also accept an optional color argument to set the color for a single instance.
+ - Use =\DndSetThemeColor[<color>]= to set =themecolor=, =commentcolor=, =paperboxcolor=, and =tablecolor= to a specific color.
+ - Calling =\DndSetThemeColor= without an argument sets those colors to the current =themecolor=.
+ - =commentbox=, =dndtable=, =paperbox=, and =quoteboxcolor= also accept an optional color argument to set the color for a single instance.
 
-*** Examples
+**** Examples
+***** Using =themecolor=
 
-**** Using =themecolor=
+ \DndSetThemeColor[PhbMauve]
 
-#+BEGIN_SRC org :exports none
-  \setthemecolor[PhbMauve]
+ #+NAME: This comment is in Mauve
+ #+begin_commentbox
+ \lipsum[1][1-2]
+ #+end_commentbox
 
-  ,#+NAME: Example
-  ,#+BEGIN_PAPERBOX
-  \lipsum[2]
-  ,#+END_PAPERBOX
+ #+NAME: This sidebar is in Mauve
+ #+begin_sidebar
+ \lipsum[1][3-4]
+ #+end_sidebar
 
-  \setthemecolor[PhbLightCyan]
+ \DndSetThemeColor[PhbLightCyan]
 
-  ,#+HEADER: Example
-  ,#+ATTR_DND: :align cX
-  | *d8* | *Item*                  |
-  |  1   | Small wooden button     |
-  |  2   | Red feather             |
-  |  3   | Human tooth             |
-  |  4   | Vial of green liquid    |
-  |  6   | Tasty biscuit           |
-  |  7   | Broken axe handle       |
-  |  8   | Tarnished silver locket |
-#+END_SRC
+ #+HEADER: Example
+ #+ATTR_DND: :align cX
+ | *d8* | *Item*                  |
+ |    1 | Small wooden button     |
+ |    2 | Red feather             |
+ |    3 | Human tooth             |
+ |    4 | Vial of green liquid    |
+ |    6 | Tasty biscuit           |
+ |    7 | Broken axe handle       |
+ |    8 | Tarnished silver locket |
 
-\setthemecolor[PhbMauve]
+***** Using element color arguments
 
-#+NAME: Example
-#+BEGIN_PAPERBOX
-\lipsum[2]
-#+END_PAPERBOX
+ #+ATTR_DND: :align cX :color DmgCoral
+ | *d8* | *Item*                    |
+ |  1 | Small wooden button     |
+ |  2 | Red feather             |
+ |  3 | Human tooth             |
+ |  4 | Vial of green liquid    |
+ |  6 | Tasty biscuit           |
+ |  7 | Broken axe handle       |
+ |  8 | Tarnished silver locket |
 
-\setthemecolor[PhbLightCyan]
 
-#+HEADER: Example
-#+ATTR_DND: :align cX
-| *d8* | *Item*                  |
-|    1 | Small wooden button     |
-|    2 | Red feather             |
-|    3 | Human tooth             |
-|    4 | Vial of green liquid    |
-|    6 | Tasty biscuit           |
-|    7 | Broken axe handle       |
-|    8 | Tarnished silver locket |
 
-**** Using element color arguments
-
-#+BEGIN_SRC org :exports none
-  ,#+ATTR_DND: :align cX :color DmgCoral
-  | *d8* | *Item*                  |
-  |  1   | Small wooden button     |
-  |  2   | Red feather             |
-  |  3   | Human tooth             |
-  |  4   | Vial of green liquid    |
-  |  6   | Tasty biscuit           |
-  |  7   | Broken axe handle       |
-  |  8   | Tarnished silver locket |
-#+END_SRC
-
-#+ATTR_DND: :align cX :color DmgCoral
-| *d8* | *Item*                  |
-|    1 | Small wooden button     |
-|    2 | Red feather             |
-|    3 | Human tooth             |
-|    4 | Vial of green liquid    |
-|    6 | Tasty biscuit           |
-|    7 | Broken axe handle       |
-|    8 | Tarnished silver locket |
-
-** Map Regions :map:
-
-The map region commands provides automatic numbering of areas.
-
-#+BEGIN_SRC org
-,** Map Regions :map:
-
-,*** Village of Hommlet
-
-This is the village of hommlet.
-
-,**** Inn of the Welcome Wench
-
-Inside the village is the inn of the
-Welcome Wench.
-
-,**** Blacksmith's Forge
-
-There's a blacksmith in town, too.
-
-,*** Foo's Castle
-
-This is foo's home, a hovel of mud and
-sticks.
-
-,**** Moat
-
-This ditch has a board spanning it.
-
-,**** Entrance
-
-A five-foot hole reveals the dirt floor
-illuminated by a hole in the roof.
-#+END_SRC
-
-*** Village of Hommlet
-
-This is the village of hommlet.
-
-**** Inn of the Welcome Wench
-
-Inside the village is the inn of the Welcome Wench.
-
-**** Blacksmith's Forge
-
-There's a blacksmith in town, too.
-
-*** Foo's Castle
-
-This is foo's home, a hovel of mud and sticks.
-
-**** Moat
-
-This ditch has a board spanning it.
-
-**** Entrance
-
-A five-foot hole reveals the dirt floor illuminated by a hole in the roof.
+ \appendix
+* Appendices
+** One Last Thing
+  \DndDropCapLine{U}sing the =\appendix= command causes all subsequent chapters to be formatted as appendices. Neat!

@@ -1,66 +1,113 @@
-% Created 2019-07-16 Tue 22:35
-% Intended LaTeX compiler: pdflatex
-\documentclass[10pt,twoside,twocolumn,openany,bg=full,nomultitoc]{dndbook}
-\usepackage[english]{babel}
+% Created 2024-06-07 Fri 00:06
+% Intended LaTeX compiler: lualatex
+\documentclass[10pt,twoside,twocolumn,openany,bg=full,notitlepage,nodeprecatedcode]{dndbook}
+\usepackage[american]{babel}
 \usepackage[utf8]{inputenc}
-\usepackage{hyperref}
-\usepackage{listings}
+\usepackage[hidelinks]{hyperref}
+\usepackage{stfloats}
+\usetikzlibrary{intersections}
+\usepackage[singlelinecheck=false]{caption}
+\captionsetup[table]{labelformat=empty,font={sf,sc,bf,},skip=0pt}
+\newcolumntype{H}{>{\setbox0=\hbox\bgroup}c<{\egroup}@{}}\usepackage{titling}
+\pretitle{\begin{center}\Huge
+\scshape \fontfamily{pbk}\fontsize{50}{40}\selectfont}
+\posttitle{\par\end{center}}
 
-\usepackage{color}
-\usepackage{listings}
+
+\usepackage{booktabs}
 \usepackage{lipsum}
-\date{\today}
-\title{Example}
+\author{The Emacs Org Dnd team}
+\date{}
+\title{The Dark \LaTeX\\\medskip
+\large An Example of the Emacs Org Dnd Mode}
 \hypersetup{
- pdfauthor={},
- pdftitle={Example},
+ pdfauthor={The Emacs Org Dnd team},
+ pdftitle={The Dark \LaTeX},
  pdfkeywords={},
  pdfsubject={},
- pdfcreator={Emacs 26.2 (Org mode 9.2.3)},
+ pdfcreator={Emacs 29.3 (Org mode 9.6.15)}, 
  pdflang={English}}
 \begin{document}
 
+\maketitle
+\setcounter{tocdepth}{2}
+{\let\clearpage\relax \tableofcontents}
 
-\chapter{Chapter 1: The Dark \LaTeX}
-\label{sec:org70b5135}
+\part{Layouts}
+\label{sec:org26478f4}
+\chapter{Templates}
+\label{sec:org6a400db}
+This package provides three different templates. They differ in the underlying \LaTeX{} classes that they use and in the way that they map the different Org headers to \LaTeX{} headers.
+\section{dndbook}
+\label{sec:orgd7de797}
+This is the most complete one. It will use the \texttt{dndbook} \LaTeX{} class and it will map the headers starting at \texttt{part} and going down from there.
+\section{dndbookbrief}
+\label{sec:org1f8f396}
+This is an alternative version of the above. It also uses the \texttt{dndbook} class, but the first level of headers is mapped to \texttt{chapter}. This makes the output more compact as parts uses full pages.
+\section{dndarticle}
+\label{sec:orgbb29c25}
+This is the best style for short documents and it uses the \texttt{dndarticle} class. Top level headers are mapped to \texttt{sections}, therefore, there are less levels available than in the others.
+\chapter{Sections}
+\label{sec:org97ad316}
+\DndDropCapLine{T}{his package is designed to aid you in} writing beautifully typeset documents for the fifth edition of the world's greatest roleplaying game. It starts by adjusting the section formatting from the defaults in \LaTeX{} to something a bit more familiar to the reader. The article formatting is displayed above.
+\section{Section}
+\label{sec:org3d5288a}
 
-\section{Main Section}
-\label{sec:org8815c0e}
-\lipsum[2]
+Sections break up chapters into large groups of associated text. Sections are defined by using Org headings. Depending on the template selected, the headings will be mapped to different latex section types. See the \texttt{org-latex-classes} variable to see how the mappings are done for the different templates.
+\subsection{Subsection}
+\label{sec:org37e8b71}
+Subsections further break down the information for the reader.
+\subsubsection{Subsubsection}
+\label{sec:org60fe0a1}
+Subsubsections are the furthest division of text that still have a block header. Below this level, headers are displayed
+inline.
+\paragraph{Paragraph.}
+\label{sec:org19539be}
+The paragraph format is seldom used in the core books, but is available if you prefer it to the “normal” style.
+\begin{enumerate}
+\item Subparagraph
+\label{sec:org1b77f08}
+The subparagraph format with the paragraph indent is likely going to be more familiar to the reader.
+\end{enumerate}
+\subsubsection{Hanging indent feature}
+\label{sec:org4aa007a}
+The description list allows hanging indented lists of options, such as those used for class features, background
+skill/tool proficiency options, and sometimes area features, for example:
+\begin{description}
+\item[{Doors:}] The doors are made from thick lumber and are unlocked.
+\item[{Light:}] The area is illuminated by candles placed in sconces on the walls. Each candle has had a continual flame spell cast on it. Dispelling a flame is rumoured to give grievous offence to the host.
+\item[{Ventilation:}] All areas contain an adequate air supply. The air is renewed via lung-like sacks that cling to the ceiling.
+\end{description}
+\section{Special Sections}
+\label{sec:org0f68d06}
+The module also includes functions to aid in the proper typesetting of multi-line section headers: \texttt{\textbackslash{}DndFeatHeader} for feats, \texttt{\textbackslash{}DndItemHeader} magic items and traps, and \texttt{\textbackslash{}DndSpellHeader} for spells.
 
-\begin{quotebox}
-As you approach this template you get a sense that the blood and tears of many generations went into its making. A warm feeling welcomes you as you type your first words.
-\end{quotebox}
+\DndFeatHeader{Typesetting Savant}[Prerequisite: a distribution]
+{You have acquired a package which aids in typesetting source material for one of your favorite games, giving you the
+following benefits:
+\begin{itemize}
+\item You have advantage on Intelligence checks to typeset new content.
+\item When you fail an Intelligence check to typeset new content, you can ask questions online at the package’s website.
+\end{itemize}
+Some other important features:
+\begin{description}[nosep, after = { \vspace{4pt plus 1pt minus 1pt} }]
+\item[Doors:] The doors are made from thick lumber and are unlocked.
+\item[Light:] The area is illuminated by candles placed in sconces on the walls. Each candle has had a continual flame spell cast on it. Dispelling a flame is rumoured to give grievous offence to the host.
+\item[Ventilation:] All areas contain an adequate air supply. The air is renewed via lung-like sacks that cling to the ceiling.
+\end{description}}
 
-\subsection{Fun with boxes}
-\label{sec:org3732cc1}
-\subsubsection{Even more fun!}
-\label{sec:org2b4450d}
+\DndItemHeader{Foo’s Quill}{Wondrous item, rare}
+This quill has 3 charges. While holding it, you can use an action to expend 1 of its charges. The quill leaps from your
+hand and writes a contract applicable to your situation.
+The quill regains \DndDice{1d3} expended charges daily at dawn.
 
-\begin{commentbox}{This Is a Comment Box!}\label{org943e959}
-A \texttt{commentbox} is a box for minimal highlighting of text. It lacks the ornamentation of \texttt{paperbox}, but it can handle being broken over a column.
-\end{commentbox}
-
-\subtitlesection{Weapon, +1, +2, or +3}{Weapon (any), uncommon (+1), rare (+2), or very rare (+3)}
-
-\lipsum[3]
-
-\begin{paperbox}[float=!t]{Behold, the Paperbox!}\label{org0a1e264}
-The \texttt{paperbox} is used as a sidebar. It does not break over columns and is best used with a figure environment to float it to one corner of the page where the surrounding text can then flow around it.
-\end{paperbox}
-
-\header{Nice Table}
-\begin{dndtable}
-\textbf{Table head} & \textbf{Table head}\\
-Some value & Some value\\
-Some value & Some value\\
-Some value & Some value\\
-\end{dndtable}
-
-\section{Spells}
-\label{sec:orgdc9aff0}
-
-\begin{spell}{Beautiful Typesetting}{4th-level illusion}{1 action}{5 feet}{S, M (ink and parchment, which the spell consumes)}{Until dispelled}
+\DndSpellHeader%
+{Beautiful Typesetting}
+{4th-level illusion}
+{1 action}
+{5 feet}
+{S, M (ink and parchment, which the spell consumes)}
+{Until dispelled}
 You are able to transform a written message of any length into a beautiful
 scroll. All creatures within range that can see the scroll must make a wisdom
 saving throw or be charmed by you until the spell ends.
@@ -69,217 +116,344 @@ While the creature is charmed by you, they cannot take their eyes off the
 scroll and cannot willingly move away from the scroll. Also, the targets can
 make a wisdom saving throw at the end of each of their turns. On a success,
 they are no longer charmed.
-\end{spell}
 
-\lipsum[2]
+\DndQuote{"Sometimes, what you need, what you want}
+{and what you have at this time turn out to be the same thing: An uplifting quote."}
+{The adventurer}
 
-\begin{monsterbox}{Monster Foo}
-\begin{hangingpar}
-\textit{Medium metasyntactic variable (goblinoid), neutral evil}
-\end{hangingpar}
-\dndline%
-\basics[%
+\section{Map Regions}
+\label{sec:orga32af69}
+
+The map region commands provides automatic numbering of areas. You just need to add the \emph{map} tag to your headings and they will be considered part of a map. Notice that only headings equivalent to certain levels in the hierarchy (\texttt{subsection} and \texttt{subsubsection} when translated to \LaTeX) will be tagged in this way.
+
+\DndArea{Village of Hommlet}
+\label{sec:org4f1a55d}
+
+This is the village of hommlet.
+
+\DndSubArea{Inn of the Welcome Wench}
+\label{sec:org4e01daa}
+
+Inside the village is the inn of the Welcome Wench.
+
+\DndSubArea{Blacksmith's Forge}
+\label{sec:org111cbb2}
+
+There's a blacksmith in town, too.
+
+\DndArea{Foo's Castle}
+\label{sec:org3ef71aa}
+
+This is foo's home, a hovel of mud and sticks.
+
+\DndSubArea{Moat}
+\label{sec:org3923bcd}
+
+This ditch has a board spanning it.
+
+\DndSubArea{Entrance}
+\label{sec:orgdcbea78}
+
+A five-foot hole reveals the dirt floor illuminated by a hole in the roof.
+
+\section{Alternative Map Region Styles}
+\label{sec:org66eabc0}
+    Published modules sometimes use plain numbers for locations, sometimes plain letters, and sometimes they prefix a
+character to the front of the numbers. The following options can be used to display in these forms. Notice that only the
+second heading has number/letters vs the two levels from the standard style:
+
+\numberedarea{Numbered Dungeon}
+\label{sec:orgbf339af}
+Areas in the Numbered Dungeon have sequential numbers. This is done using
+the \emph{numberedmap} tag in your headers:
+
+\numberedsubarea{Entry}
+\label{sec:org47c910b}
+The entry.
+\numberedsubarea{Trap}
+\label{sec:orgedd280f}
+The trap.
+\numberedsubarea{Fight}
+\label{sec:org9ba81db}
+The fight.
+\numberedsubarea{Exit}
+\label{sec:orgddd484a}
+The exit.
+\letteredarea{Lettered Dungeon}
+\label{sec:orga700f1c}
+Same as above but using the \emph{letteredmap} tag in the headers:
+
+\letteredsubarea{Entry}
+\label{sec:org982487d}
+The entry.
+\letteredsubarea{Trap}
+\label{sec:org7f30ff7}
+The trap.
+\letteredsubarea{Fight}
+\label{sec:orga9cd1f4}
+The fight.
+\letteredsubarea{Exit}
+\label{sec:org57340a0}
+The exit.
+\chapter{Text Boxes}
+\label{sec:org6b565cd}
+The module has three environments for setting text apart so that it is drawn to the reader's attention. \texttt{readaloud} is used for text that a game master would read aloud.
+
+\begin{DndReadAloud}
+As you approach this template you get a sense that the blood and tears of many generations went into its making. A warm feeling welcomes you as you type your first words.
+\end{DndReadAloud}
+\section{As an Aside}
+\label{sec:orgbbfe1f4}
+
+The other two environments are the \texttt{commentbox} and the \texttt{sidebar}. The \texttt{commentbox} is breakable and can safely be used inline in the text.
+
+\begin{DndComment}{This Is a Comment Box!}\label{This Is a Comment Box!}
+A \texttt{commentbox} is a box for minimal highlighting of text. It lacks the ornamentation of \texttt{sidebar}, but it can handle being broken over a column.
+
+You can use the \texttt{name} property to specify the title. If you do not, the first line of the content will be taken as the title.
+\end{DndComment}
+
+The \texttt{sidebar} is not breakable and is best used floated toward a page corner as it is below.
+
+\begin{DndSidebar}[float=!h]{Behold, the Sidebar!}\label{Behold, the Sidebar!}
+\tocside{Behold, the Sidebar!}The \texttt{sidebar} is used as a sidebar. It does not break over columns and is best used with a figure environment to float it to one corner of the page where the surrounding text can then flow around it.
+
+You can use the \texttt{toc} property to add the entry to the table of contents for both \texttt{commentbox} and \texttt{sidebar}.
+\end{DndSidebar}
+
+\section{Tables}
+\label{sec:orgfd8bdf9}
+\begin{DndTable}[header=Nice Table]{cX}
+Table head & Table head\\[0pt]
+Some value & Some value\\[0pt]
+Some value & Some value\\[0pt]
+Some value & Some value\\[0pt]
+\end{DndTable}
+
+\begin{ornamentedtabular}{cl}[title=Ornamental table]
+\textbf{Table head} & \textbf{Table head}\\[0pt]
+Some value & Some value\\[0pt]
+Some value & Some value\\[0pt]
+Some value & Some value\\[0pt]
+\end{ornamentedtabular}
+
+\begin{multicols}{2}
+\begin{DndAltTable}[header=Left table]{cX}
+\textbf{Head} & \textbf{Head}\\[0pt]
+Value & Value\\[0pt]
+Value & Value\\[0pt]
+Value & Value\\[0pt]
+\end{DndAltTable}
+
+\begin{DndAltTable}[header=Right table]{cX}
+\textbf{Head} & \textbf{Head}\\[0pt]
+Value & Value\\[0pt]
+Value & Value\\[0pt]
+Value & Value\\[0pt]
+\end{DndAltTable}
+\end{multicols}
+
+
+\begin{multicols}{2}
+\begin{DndAltTable}[header=Left~table~with~spanning]{cX}
+\textbf{Head} & \textbf{Head}\\[0pt]
+Value & Value\\[0pt]
+Value & Value\\[0pt]
+Value & Value\\[0pt]
+\end{DndAltTable}
+
+\begin{DndAltTable}[header=~]{cX}
+\textbf{Head} & \textbf{Head}\\[0pt]
+Value & Value\\[0pt]
+Value & Value\\[0pt]
+Value & Value\\[0pt]
+\end{DndAltTable}
+\end{multicols}
+
+
+\begin{minipage}{8cm}
+\begin{DndTable}[header=Nice Table with footnote]{cX}
+\textbf{Table head} & \textbf{Table head}\\[0pt]
+Some value & Some value\\[0pt]
+Some value & Some value\\[0pt]
+Some value & Some value \footnotemark\\[0pt]
+\end{DndTable}
+
+\footnotetext[1]{\label{orgc9a8f96}This is a footnote}
+\end{minipage}
+
+\begin{dndlongtable}[c p{0.5\linewidth} p{0.20\linewidth}]
+\textbf{Table head} & \textbf{Table head} & \textbf{Table head}\\[0pt]
+Some value & Some very long value that might expand more than one line & Some value\\[0pt]
+Some value & Some value & Some value\\[0pt]
+Some value & Some value & \\[0pt]
+Some value & Some value & Some value\\[0pt]
+Some value & Some value & \\[0pt]
+Some value & Some value & Some value\\[0pt]
+Some value & Some value & \\[0pt]
+Some value & Some value & \\[0pt]
+Some value & Some value & \\[0pt]
+Some value & Some value & \\[0pt]
+Some value & Some value & \\[0pt]
+Some value & Some value & \\[0pt]
+Some value & Some value & \\[0pt]
+Some value & Some value & \\[0pt]
+Some value & Some value & \\[0pt]
+Some value & Some value & \\[0pt]
+Some value & Some value & \\[0pt]
+Some value & Some value & \\[0pt]
+Some value & Some value & \\[0pt]
+Some value & Some value & \\[0pt]
+Some value & Some value & \\[0pt]
+Some value & Some value & \\[0pt]
+Some value & Some value & \\[0pt]
+Some value & Some value & \\[0pt]
+Some value & Some value & \\[0pt]
+Some value & Some value & \\[0pt]
+Some value & Some value & \\[0pt]
+Some value & Some value & \\[0pt]
+Some value & Some value & \\[0pt]
+Some value & Some value & \\[0pt]
+Some value & Some value & \\[0pt]
+Some value & Some value & \\[0pt]
+\end{dndlongtable}
+
+\begin{DndMonster}{Monster Foo}
+\DndMonsterType{Medium metasyntactic variable (goblinoid), neutral evil}
+\DndMonsterBasics[%
 armorclass = 9 (12 with \emph{mage armor}),
-hitpoints = \dice{3d8+3},
+hitpoints = 3d8+3,
 speed = {30 ft., fly 30 ft.},
 ]
-\dndline%
-\stats[%
-CON = \stat{13},
-STR = \stat{12},
-DEX = \stat{8},
-INT = \stat{10},
-WIS = \stat{14},
-CHA = \stat{15},
+\DndMonsterAbilityScores[%
+CON = 13,
+STR = 12,
+DEX = 8,
+INT = 10,
+WIS = 14,
+CHA = 15,
 ]
-\dndline%
-\details[%
+\DndMonsterDetails[%
 senses = {darkvision 60ft., passive Perception 10},
 languages = {Common, Goblin},
 challenge = {1},
 ]
-\dndline
-\begin{monsteraction}[Innate Spellcasting]
-Foo's spellcasting ability is Charisma (spell save DC 12, +4 to hit with spell attacks). It can innately cast the following spells, requiring no material components:
-\end{monsteraction}
-\begin{monsteraction}[At will]
-\emph{misty step}
-\end{monsteraction}
-\begin{monsteraction}[3/day]
-\emph{fog cloud}, \emph{rope trick}
-\end{monsteraction}
-\begin{monsteraction}[1/day]
-\emph{identify}
-\end{monsteraction}
-\begin{monsteraction}[Spellcasting]
-Foo is a 3rd-level spellcaster. Its spellcasting ability is Charisma (spell save DC 12, +4 to hit with spell attacks). It has the following sorcerer spells prepared:
-\end{monsteraction}
-\begin{monsteraction}[At will]
-\emph{blade ward}, \emph{fire bolt}, \emph{light}, \emph{shocking grasp}
-\end{monsteraction}
-\begin{monsteraction}[1st level (4 slots)]
-\emph{burning hands}, \emph{mage armor}
-\end{monsteraction}
-\begin{monsteraction}[2nd level (2 slots)]
-\emph{scorching ray}
-\end{monsteraction}
-\monstersection{Actions}
-\begin{monsteraction}[Multiattack]
-The foo makes two melee attacks.
-\end{monsteraction}
-\begin{monsteraction}[Dagger]
-\emph{Melee or Ranged Weapon Attack:} +3 to hit, reach 5 ft. or range 20/60ft., one target. \emph{Hit:} \dice{1d4 + 1} piercing damage.
-\end{monsteraction}
-\begin{monsteraction}[Flame Tongue Longsword]
-\emph{Melee Weapon Attack:} +3 to hit, reach 5 ft., one target. \emph{Hit:} \dice{1d4 + 1} slashing damage plus \dice{2d6} fire damage, or \dice{1d10 + 1} slashing damage plus \dice{2d6} fire damage if used with two hands.
-\end{monsteraction}
-\begin{monsteraction}[Assassin's Light Crossbow]
-\emph{Ranged Weapon Attack:} +0 to hit, range 80/320 ft., one target. \emph{Hit:} \dice{1d8} piercing damage, and the target must make a DC 15 Constitution saving throw, taking \dice{7d6} poison damage on a failed save, or half as much damage on a successful one.
-\end{monsteraction}
-\end{monsterbox}
+\DndMonsterAction{Innate Spellcasting}
+Foo's spellcasting ability is Charisma (spell save DC 12, +4 to hit with spell attacks). It can innately cast the following spells, requiring no material components:\par
+\DndMonsterAction{At will}
+\emph{misty step}\par
+\DndMonsterAction{3/day}
+\emph{fog cloud}, \emph{rope trick}\par
+\DndMonsterAction{1/day}
+\emph{identify}\par
+\DndMonsterAction{Spellcasting}
+Foo is a 3rd-level spellcaster. Its spellcasting ability is Charisma (spell save DC 12, +4 to hit with spell attacks). It has the following sorcerer spells prepared:\par
+\DndMonsterAction{At will}
+\emph{blade ward}, \emph{fire bolt}, \emph{light}, \emph{shocking grasp}\par
+\DndMonsterAction{1st level (4 slots)}
+\emph{burning hands}, \emph{mage armor}\par
+\DndMonsterAction{2nd level (2 slots)}
+\emph{scorching ray}\par
+\DndMonsterSection{Actions}
+\DndMonsterAction{Multiattack}
+The foo makes two melee attacks.\par
+\DndMonsterAction{Dagger}
+\emph{Melee or Ranged Weapon Attack:} +3 to hit, reach 5 ft. or range 20/60ft., one target. \emph{Hit:} \DndDice{1d4 + 1} piercing damage.\par
+\DndMonsterAction{Flame Tongue Longsword}
+\emph{Melee Weapon Attack:} +3 to hit, reach 5 ft., one target. \emph{Hit:} \DndDice{1d4 + 1} slashing damage plus \DndDice{2d6} fire damage, or \DndDice{1d10 + 1} slashing damage plus \DndDice{2d6} fire damage if used with two
+hands.\par
+\DndMonsterAction{Assassin's Light Crossbow}
+\emph{Ranged Weapon Attack:} +0 to hit, range 80/320 ft., one target. \emph{Hit:} \DndDice{1d8} piercing damage, and the target must make a DC 15 Constitution saving throw, taking \DndDice{7d6} poison damage on a failed save, or half as much damage on a successful one.\par
+\end{DndMonster}
 
-\section{Colors}
-\label{sec:org523ac5a}
+\part{Customizations}
+\label{sec:org360651f}
+\chapter{Colors}
+\label{sec:org5ffd89b}
 
-This package provides several global color variables to style \texttt{commentbox}, \texttt{quotebox}, \texttt{paperbox}, and \texttt{dndtable} environments.
+This package provides several global color variables to style \texttt{commentbox}, \texttt{readaloud}, \texttt{sidebar}, and \texttt{dndtable} environments.
 
-\begin{dndtable}[lX]
-\textbf{Color} & \textbf{Description}\\
-\texttt{commentboxcolor} & Controls \texttt{commentbox} background.\\
-\texttt{paperboxcolor} & Controls \texttt{paperbox} background.\\
-\texttt{quoteboxcolor} & Controls \texttt{quotebox} background.\\
-\texttt{tablecolor} & Controls background of even \texttt{dndtable} rows.\\
-\end{dndtable}
+\begin{DndTable}{lX}
+\textbf{Color} & \textbf{Description}\\[0pt]
+\texttt{commentboxcolor} & Controls \texttt{commentbox} background.\\[0pt]
+\texttt{paperboxcolor} & Controls \texttt{paperbox} background.\\[0pt]
+\texttt{quoteboxcolor} & Controls \texttt{quotebox} background.\\[0pt]
+\texttt{tablecolor} & Controls background of even \texttt{dndtable} rows.\\[0pt]
+\end{DndTable}
 
-See Table \ref{tab:org93502e7} for a list of accent colors that match the core books.
+See Table \ref{tab:colors} for a list of accent colors that match the core books.
 
-\begin{table*}[htbp]
+\begin{table}[htbp]
+\begin{DndTable}{XX}
+\textbf{Color} & \textbf{Description}\\[0pt]
+\rowcolor{PhbLightGreen} \texttt{PhbLightGreen} & Light green used in PHB Part 1\\[0pt]
+\rowcolor{PhbLightCyan} \texttt{PhbLightCyan} & Light cyan used in PHB Part 2\\[0pt]
+\rowcolor{PhbMauve} \texttt{PhbMauve} & Pale purple used in PHB Part 3\\[0pt]
+\rowcolor{PhbTan} \texttt{PhbTan} & Light brown used in PHB appendix\\[0pt]
+\rowcolor{DmgLavender} \texttt{DmgLavender} & Pale purple used in DMG Part 1\\[0pt]
+\rowcolor{DmgCoral} \texttt{DmgCoral} & Orange-pink used in DMG Part 2\\[0pt]
+\rowcolor{DmgSlateGrey} \texttt{DmgSlateGray} (\texttt{DmgSlateGrey}) & Blue-gray used in PHB Part 3\\[0pt]
+\rowcolor{DmgLilac} \texttt{DmgLilac} & Purple-gray used in DMG appendix\\[0pt]
+\rowcolor{BrGreen} \texttt{BrGreen} & Light-gray used for tables in Basic Rules\\[0pt]
+\end{DndTable}
+\caption{\label{tab:colors}Colors supported by this package}
 
-\begin{dndtable}[XX]
-\textbf{Color} & \textbf{Description}\\
-\texttt{PhbLightGreen} & Light green used in PHB Part 1\\
-\texttt{PhbLightCyan} & Light cyan used in PHB Part 2\\
-\texttt{PhbMauve} & Pale purple used in PHB Part 3\\
-\texttt{PhbTan} & Light brown used in PHB appendix\\
-\texttt{DmgLavender} & Pale purple used in DMG Part 1\\
-\texttt{DmgCoral} & Orange-pink used in DMG Part 2\\
-\texttt{DmgSlateGray} (\texttt{DmgSlateGrey}) & Blue-gray used in PHB Part 3\\
-\texttt{DmgLilac} & Purple-gray used in DMG appendix\\
-\end{dndtable}
-\caption{\label{tab:org93502e7}
-Colors supported by this package}
-
-\end{table*}
+\end{table}
 
 \begin{itemize}
-\item Use \texttt{\textbackslash{}setthemecolor[<color>]} to set \texttt{themecolor}, \texttt{commentcolor}, \texttt{paperboxcolor}, and \texttt{tablecolor} to a specific color.
-\item Calling \texttt{\textbackslash{}setthemecolor} without an argument sets those colors to the current \texttt{themecolor}.
+\item Use \texttt{\textbackslash{}DndSetThemeColor[<color>]} to set \texttt{themecolor}, \texttt{commentcolor}, \texttt{paperboxcolor}, and \texttt{tablecolor} to a specific color.
+\item Calling \texttt{\textbackslash{}DndSetThemeColor} without an argument sets those colors to the current \texttt{themecolor}.
 \item \texttt{commentbox}, \texttt{dndtable}, \texttt{paperbox}, and \texttt{quoteboxcolor} also accept an optional color argument to set the color for a single instance.
 \end{itemize}
 
 \subsection{Examples}
-\label{sec:orgc47216d}
-
+\label{sec:org6beaae5}
 \subsubsection{Using \texttt{themecolor}}
-\label{sec:org547c3ec}
+\label{sec:org455498c}
 
-\setthemecolor[PhbMauve]
+\DndSetThemeColor[PhbMauve]
 
-\begin{paperbox}[float=!t]{Example}\label{org72655cf}
-\lipsum[2]
-\end{paperbox}
+\begin{DndComment}{This comment is in Mauve}\label{This comment is in Mauve}
+\lipsum[1][1-2]
+\end{DndComment}
 
-\setthemecolor[PhbLightCyan]
+\begin{DndSidebar}[float=!h]{This sidebar is in Mauve}\label{This sidebar is in Mauve}
+\lipsum[1][3-4]
+\end{DndSidebar}
 
-\header{Example}
-\begin{dndtable}[cX]
-\textbf{d8} & \textbf{Item}\\
-1 & Small wooden button\\
-2 & Red feather\\
-3 & Human tooth\\
-4 & Vial of green liquid\\
-6 & Tasty biscuit\\
-7 & Broken axe handle\\
-8 & Tarnished silver locket\\
-\end{dndtable}
+\DndSetThemeColor[PhbLightCyan]
+
+\begin{DndTable}[header=Example]{cX}
+\textbf{d8} & \textbf{Item}\\[0pt]
+1 & Small wooden button\\[0pt]
+2 & Red feather\\[0pt]
+3 & Human tooth\\[0pt]
+4 & Vial of green liquid\\[0pt]
+6 & Tasty biscuit\\[0pt]
+7 & Broken axe handle\\[0pt]
+8 & Tarnished silver locket\\[0pt]
+\end{DndTable}
 
 \subsubsection{Using element color arguments}
-\label{sec:orgfdc6e2c}
+\label{sec:org83acaf4}
 
-\begin{dndtable}[cX][DmgCoral]
-\textbf{d8} & \textbf{Item}\\
-1 & Small wooden button\\
-2 & Red feather\\
-3 & Human tooth\\
-4 & Vial of green liquid\\
-6 & Tasty biscuit\\
-7 & Broken axe handle\\
-8 & Tarnished silver locket\\
-\end{dndtable}
+\begin{DndTable}[color=DmgCoral]{cX}
+\textbf{d8} & \textbf{Item}\\[0pt]
+1 & Small wooden button\\[0pt]
+2 & Red feather\\[0pt]
+3 & Human tooth\\[0pt]
+4 & Vial of green liquid\\[0pt]
+6 & Tasty biscuit\\[0pt]
+7 & Broken axe handle\\[0pt]
+8 & Tarnished silver locket\\[0pt]
+\end{DndTable}
 
-\section{Map Regions}
-\label{sec:orgaf7e525}
 
-The map region commands provides automatic numbering of areas.
 
-\begin{verbatim}
-** Map Regions :map:
-
-*** Village of Hommlet
-
-This is the village of hommlet.
-
-**** Inn of the Welcome Wench
-
-Inside the village is the inn of the
-Welcome Wench.
-
-**** Blacksmith's Forge
-
-There's a blacksmith in town, too.
-
-*** Foo's Castle
-
-This is foo's home, a hovel of mud and
-sticks.
-
-**** Moat
-
-This ditch has a board spanning it.
-
-**** Entrance
-
-A five-foot hole reveals the dirt floor
-illuminated by a hole in the roof.
-\end{verbatim}
-
-\area{Village of Hommlet}
-\label{sec:org5ba5a97}
-
-This is the village of hommlet.
-
-\subarea{Inn of the Welcome Wench}
-\label{sec:org93b54e4}
-
-Inside the village is the inn of the Welcome Wench.
-
-\subarea{Blacksmith's Forge}
-\label{sec:org8f38325}
-
-There's a blacksmith in town, too.
-
-\area{Foo's Castle}
-\label{sec:orgad26bbf}
-
-This is foo's home, a hovel of mud and sticks.
-
-\subarea{Moat}
-\label{sec:org77e64f2}
-
-This ditch has a board spanning it.
-
-\subarea{Entrance}
-\label{sec:org99a7b06}
-
-A five-foot hole reveals the dirt floor illuminated by a hole in the roof.
+\appendix
+\part{Appendices}
+\label{sec:org2c95788}
+\chapter{One Last Thing}
+\label{sec:org9ab587b}
+\DndDropCapLine{U}sing the \texttt{\textbackslash{}appendix} command causes all subsequent chapters to be formatted as appendices. Neat!
 \end{document}
